@@ -20,7 +20,7 @@ Using a specific commit provides a reproducible reference point for the applicat
 
 ## License
 
-The upstream project contains an MIT License.
+The upstream project contains an MIT-0 License.
 
 The original license has been preserved at:
 

@@ -31,7 +31,7 @@ Baseline commit used for this project:
 
 `1a28474f2461459f42e6b393db59e7d1434d4aec`
 
-The upstream application is licensed under the MIT License.
+The upstream application is licensed under the MIT-0 License.
 
 Upstream copyright and license information are preserved under:
 
