@@ -87,3 +87,4 @@ The repository structure will evolve as infrastructure, CI/CD, Kubernetes, obser
 Application code provides the workload.
 
 The DevOps / Platform Engineering solution is the work being designed, implemented, validated, and documented in this repository.
+
