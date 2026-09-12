@@ -17,6 +17,8 @@ COPY checkout/ ./
 
 RUN yarn build
 
+RUN yarn workspaces focus --all --production
+
 FROM node:22-bookworm-slim AS runtime
 
 WORKDIR /app
