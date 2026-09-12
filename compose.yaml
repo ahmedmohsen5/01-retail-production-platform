@@ -1,0 +1,117 @@
+services:
+  catalog:
+    build:
+      context: ./application
+      dockerfile: ../docker/catalog/Dockerfile
+    restart: 'no'
+    ports:
+      - "8081:8080"
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - >-
+        bash -c 'exec 3<>/dev/tcp/127.0.0.1/8080 &&
+        printf "GET /health HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n" >&3 &&
+        read -r status <&3 &&
+        [[ "$$status" == *" 200 "* ]]'
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
+    networks:
+      - retail
+  cart:
+    build:
+      context: ./application
+      dockerfile: ../docker/cart/Dockerfile
+    restart: 'no'
+    ports:
+      - "8082:8080"
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - >-
+        bash -c 'exec 3<>/dev/tcp/127.0.0.1/8080 &&
+        printf "GET /health HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n" >&3 &&
+        read -r status <&3 &&
+        [[ "$$status" == *" 200 "* ]]'
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
+    networks:
+      - retail
+  orders:
+    build:
+      context: ./application
+      dockerfile: ../docker/orders/Dockerfile
+    restart: 'no'
+    ports:
+      - "8083:8080"
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - >-
+        bash -c 'exec 3<>/dev/tcp/127.0.0.1/8080 &&
+        printf "GET /health HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n" >&3 &&
+        read -r status <&3 &&
+        [[ "$$status" == *" 200 "* ]]'
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
+    networks:
+      - retail
+  checkout:
+    build:
+      context: ./application
+      dockerfile: ../docker/checkout/Dockerfile
+    restart: 'no'
+    environment:
+      RETAIL_CHECKOUT_ENDPOINTS_ORDERS: "http://orders:8080"
+    ports:
+      - "8084:8080"
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          bash -c 'exec 3<>/dev/tcp/127.0.0.1/8080 &&
+          printf "GET /health HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n" >&3 &&
+          read -r status <&3 &&
+          [[ "$$status" == *" 200 "* ]]'
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
+    networks:
+      - retail
+  ui:
+    build:
+      context: ./application
+      dockerfile: ../docker/ui/Dockerfile
+    restart: 'no'
+    ports:
+      - "8080:8080"
+    environment:
+      RETAIL_UI_ENDPOINTS_CATALOG: "http://catalog:8080"
+      RETAIL_UI_ENDPOINTS_CARTS: "http://cart:8080"
+      RETAIL_UI_ENDPOINTS_ORDERS: "http://orders:8080"
+      RETAIL_UI_ENDPOINTS_CHECKOUT: "http://checkout:8080"
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - >-
+        bash -c 'exec 3<>/dev/tcp/127.0.0.1/8080 &&
+        printf "GET /actuator/health HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n" >&3 &&
+        read -r status <&3 &&
+        [[ "$$status" == *" 200 "* ]]'
+        interval: 10s
+        timeout: 3s
+        retries: 5
+        start_period: 30s
+    networks:
+      - retail
+networks:
+  retail:
+    name: retail-local
+    driver: bridge
