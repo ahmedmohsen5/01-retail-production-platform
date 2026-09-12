@@ -76,7 +76,7 @@ services:
         - CMD-SHELL
         - >-
           bash -c 'exec 3<>/dev/tcp/127.0.0.1/8080 &&
-          printf "GET /actuator/health HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n" >&3 &&
+          printf "GET /health HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n" >&3 &&
           read -r status <&3 &&
           [[ "$$status" == *" 200 "* ]]'
       interval: 10s
@@ -105,10 +105,10 @@ services:
         printf "GET /actuator/health HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n" >&3 &&
         read -r status <&3 &&
         [[ "$$status" == *" 200 "* ]]'
-        interval: 10s
-        timeout: 3s
-        retries: 5
-        start_period: 30s
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
     networks:
       - retail
 networks:
