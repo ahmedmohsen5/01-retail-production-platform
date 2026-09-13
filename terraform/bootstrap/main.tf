@@ -10,7 +10,7 @@ resource "aws_s3_bucket" "terraform_state" {
 
   tags = {
     Name        = local.state_bucket_name
-    Environment = "production"
+    TerraformState = "true"
     Project     = var.project_name
     managed_by  = "terraform"
   }
@@ -46,7 +46,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "encryption" {
   }
 }
 
-resource "aws_s3_bucket_ownership_controls" "name" {
+resource "aws_s3_bucket_ownership_controls" "terraform_state" {
   bucket = aws_s3_bucket.terraform_state.id
 
   rule {
