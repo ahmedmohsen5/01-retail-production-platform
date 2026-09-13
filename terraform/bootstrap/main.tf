@@ -9,10 +9,10 @@ resource "aws_s3_bucket" "terraform_state" {
   force_destroy = false
 
   tags = {
-    Name        = local.state_bucket_name
+    Name           = local.state_bucket_name
     TerraformState = "true"
-    Project     = var.project_name
-    managed_by  = "terraform"
+    Project        = var.project_name
+    managed_by     = "terraform"
   }
   lifecycle {
     prevent_destroy = true
@@ -25,7 +25,7 @@ resource "aws_s3_bucket_versioning" "terraform_state_versioning" {
   versioning_configuration {
     status = "Enabled"
   }
-  
+
 }
 
 resource "aws_s3_bucket_public_access_block" "terraform_state_public_access" {
