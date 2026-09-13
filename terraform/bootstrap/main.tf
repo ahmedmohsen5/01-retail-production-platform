@@ -6,7 +6,7 @@ locals {
 
 resource "aws_s3_bucket" "terraform_state" {
   bucket        = local.state_bucket_name
-  force_destroy = true
+  force_destroy = false
 
   tags = {
     Name        = local.state_bucket_name
@@ -43,6 +43,14 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "encryption" {
     apply_server_side_encryption_by_default {
       sse_algorithm = "AES256"
     }
+  }
+}
+
+resource "aws_s3_bucket_ownership_controls" "name" {
+  bucket = aws_s3_bucket.terraform_state.id
+
+  rule {
+    object_ownership = "BucketOwnerEnforced"
   }
 }
 
