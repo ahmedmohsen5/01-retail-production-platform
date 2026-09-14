@@ -6,13 +6,13 @@ locals {
 
 resource "aws_s3_bucket" "terraform_state" {
   bucket        = local.state_bucket_name
-  force_destroy = true
+  force_destroy = false
 
   tags = {
-    Name        = local.state_bucket_name
-    Environment = "production"
-    Project     = var.project_name
-    managed_by  = "terraform"
+    Name           = local.state_bucket_name
+    TerraformState = "true"
+    Project        = var.project_name
+    managed_by     = "terraform"
   }
   lifecycle {
     prevent_destroy = true
@@ -25,7 +25,7 @@ resource "aws_s3_bucket_versioning" "terraform_state_versioning" {
   versioning_configuration {
     status = "Enabled"
   }
-  
+
 }
 
 resource "aws_s3_bucket_public_access_block" "terraform_state_public_access" {
@@ -44,6 +44,35 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "encryption" {
       sse_algorithm = "AES256"
     }
   }
+}
+
+resource "aws_s3_bucket_ownership_controls" "terraform_state" {
+  bucket = aws_s3_bucket.terraform_state.id
+
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
+}
+
+resource "aws_s3_bucket_policy" "terraform_state_tls" {
+  bucket = aws_s3_bucket.terraform_state.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "DenyInsecureTransport"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource = [aws_s3_bucket.terraform_state.arn,
+        "${aws_s3_bucket.terraform_state.arn}/*"]
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
+      } }
+    ]
+  })
 }
 
 
