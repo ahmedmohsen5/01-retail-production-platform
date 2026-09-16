@@ -87,7 +87,6 @@ resource "aws_route_table" "private" {
   }
 }
 
-
 resource "aws_route" "public_internet_access" {
   route_table_id         = aws_route_table.public.id
   destination_cidr_block = "0.0.0.0/0"
@@ -111,4 +110,93 @@ resource "aws_route_table_association" "private" {
   for_each       = var.private_subnet_cidrs
   subnet_id      = aws_subnet.private[each.key].id
   route_table_id = aws_route_table.private[each.key].id
+}
+
+#-----------------------------------------------security groups-----------------------------------------------
+
+resource "aws_security_group" "alb-sg" {
+  name        = "retail-platform-alb-sg"
+  description = "Security group for the Application Load Balancer"
+  vpc_id      = aws_vpc.main.id
+  tags = {
+    Name        = "retail-platform-alb-sg"
+    environment = "dev"
+    project     = "retail-platform"
+  }
+}
+resource "aws_security_group" "eks-sg" {
+  name        = "retail-platform-eks-sg"
+  description = "Security group for the EKS cluster"
+  vpc_id      = aws_vpc.main.id
+  tags = {
+    Name        = "retail-platform-eks-sg"
+    environment = "dev"
+    project     = "retail-platform"
+  }
+}
+
+resource "aws_security_group" "eks-node-sg" {
+  name        = "retail-platform-eks-node-sg"
+  description = "Security group for the EKS worker nodes"
+  vpc_id      = aws_vpc.main.id
+  tags = {
+    Name        = "retail-platform-eks-node-sg"
+    environment = "dev"
+    project     = "retail-platform"
+  }
+
+}
+
+resource "aws_vpc_security_group_ingress_rule" "alb-http" {
+  security_group_id = aws_security_group.alb-sg.id
+  from_port         = 80
+  to_port           = 80
+  ip_protocol       = "tcp"
+  cidr_ipv4         = "0.0.0.0/0"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "alb-https" {
+  security_group_id = aws_security_group.alb-sg.id
+  from_port         = 443
+  to_port           = 443
+  ip_protocol       = "tcp"
+  cidr_ipv4         = "0.0.0.0/0"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "eks-https" {
+  security_group_id            = aws_security_group.eks-sg.id
+  from_port                    = 443
+  to_port                      = 443
+  ip_protocol                  = "tcp"
+  referenced_security_group_id = aws_security_group.eks-node-sg.id
+}
+
+resource "aws_vpc_security_group_egress_rule" "eks-10250-egress" {
+  security_group_id            = aws_security_group.eks-sg.id
+  from_port                    = 10250
+  to_port                      = 10250
+  ip_protocol                  = "tcp"
+  referenced_security_group_id = aws_security_group.eks-node-sg.id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "eks-node-10250" {
+  security_group_id            = aws_security_group.eks-node-sg.id
+  from_port                    = 10250
+  to_port                      = 10250
+  ip_protocol                  = "tcp"
+  referenced_security_group_id = aws_security_group.eks-sg.id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "eks-node-to-node-traffic" {
+  security_group_id            = aws_security_group.eks-node-sg.id
+  ip_protocol                  = "-1"
+  referenced_security_group_id = aws_security_group.eks-node-sg.id
+}
+
+resource "aws_vpc_security_group_egress_rule" "eks-node-https" {
+  security_group_id = aws_security_group.eks-node-sg.id
+  from_port         = 443
+  to_port           = 443
+  ip_protocol       = "tcp"
+  cidr_ipv4         = "0.0.0.0/0"
 }

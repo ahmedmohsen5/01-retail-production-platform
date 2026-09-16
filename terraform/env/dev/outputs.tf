@@ -38,3 +38,23 @@ output "public_route_table_ids" {
 output "private_route_table_ids" {
   value = [for rt in aws_route_table.private : rt.id]
 }
+
+output "alb_sg_id" {
+  value = aws_security_group.alb-sg.id
+}
+
+output "eks_sg_id" {
+  value = aws_security_group.eks-sg.id
+}
+
+output "eks_node_sg_id" {
+  value = aws_security_group.eks-node-sg.id
+}
+
+output "eks_cluster_role_arn" {
+  value = aws_iam_role.eks_cluster_role.arn
+}
+
+output "eks_node_role_arn" {
+  value = aws_iam_role.eks_node_role.arn
+}
