@@ -58,3 +58,9 @@ output "eks_cluster_role_arn" {
 output "eks_node_role_arn" {
   value = aws_iam_role.eks_node_role.arn
 }
+
+output "ecr_repository_urls" {
+  value = {
+    for name, repo in aws_ecr_repository.service : name => repo.repository_url
+  }
+}
