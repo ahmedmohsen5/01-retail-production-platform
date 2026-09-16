@@ -53,7 +53,7 @@ resource "aws_eip" "private_nat" {
 
 resource "aws_nat_gateway" "private" {
   for_each      = var.private_subnet_cidrs
-  subnet_id     = aws_subnet.private[each.key].id
+  subnet_id     = aws_subnet.public[each.key].id
   allocation_id = aws_eip.private_nat[each.key].id
   tags = {
     Name        = "retail-platform-private-nat-${each.key}"
