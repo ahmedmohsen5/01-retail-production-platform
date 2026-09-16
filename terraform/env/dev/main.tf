@@ -60,7 +60,7 @@ resource "aws_nat_gateway" "private" {
   for_each      = var.private_subnet_cidrs
   subnet_id     = aws_subnet.public[each.key].id
   allocation_id = aws_eip.private_nat[each.key].id
-  depends_on = [ aws_internet_gateway.main ]
+  depends_on    = [aws_internet_gateway.main]
   tags = {
     Name        = "retail-platform-private-nat-${each.key}"
     environment = "dev"
