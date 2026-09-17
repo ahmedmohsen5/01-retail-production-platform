@@ -1,4 +1,4 @@
-name: aws identity test
+name: AWS Identity Test
 
 on:
   workflow_dispatch: 
