@@ -7,13 +7,17 @@ module "eks" {
 
   subnet_ids = [for subnet in aws_subnet.private : subnet.id]
 
+  authentication_mode = "API_AND_CONFIG_MAP"
+
+  access_entries = "arn:aws:iam::147723036683:user/ahmed"
+
   additional_security_group_ids = [
     aws_security_group.eks-sg.id
   ]
 
   endpoint_private_access = true
   endpoint_public_access  = true
-  public_access_cidrs     = ["154.178.127.47/32"]
+  public_access_cidrs     = ["197.42.74.172/32"]
 
   enabled_cluster_log_types = [
     "api",
