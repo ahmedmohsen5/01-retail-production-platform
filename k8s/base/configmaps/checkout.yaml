@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: checkout-config
-  namespace: retail 
+  namespace: retail
   labels:
     app.kubernetes.io/name: checkout
     app.kubernetes.io/part-of: retail-store
