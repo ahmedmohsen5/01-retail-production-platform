@@ -1,21 +1,61 @@
-name: AWS Identity Test
+name: AWS Identity and Image Publish
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
 
-permissions: 
+permissions:
+  contents: read
   id-token: write
 
 jobs:
   identity:
     runs-on: ubuntu-latest
     steps:
-      - name: configure aws cred via oidc 
+      - name: configure aws cred via oidc
         uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd
         with:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}
           allowed-account-ids: ${{ vars.AWS_ACCOUNT_ID }}
           role-session-name: github-actions-${{ github.run_id }}
           aws-region: ${{ vars.AWS_REGION }}
-      - name: verify aws identity 
-        run: aws sts get-caller-identity 
+      - name: verify aws identity
+        run: aws sts get-caller-identity
+
+  build-and-push:
+    name: Build and push retail-${{ matrix.service }}
+    needs: identity
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [ui, catalog, cart, orders, checkout]
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          allowed-account-ids: ${{ vars.AWS_ACCOUNT_ID }}
+          role-session-name: github-actions-${{ github.run_id }}-${{ matrix.service }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@4625ce35226a7557230889aae2f52eb50ec3dcda # v2.0.1
+
+      - name: Build and push image
+        env:
+          ECR_REGISTRY: ${{ steps.ecr.outputs.registry }}
+          SERVICE: ${{ matrix.service }}
+          # Unique on reruns as well, since ECR repositories use immutable tags.
+          IMAGE_TAG: ${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          IMAGE_URI="${ECR_REGISTRY}/retail-${SERVICE}:${IMAGE_TAG}"
+          docker build --file "docker/${SERVICE}/Dockerfile" --tag "$IMAGE_URI" ./application
+          docker push "$IMAGE_URI"
+          printf '### Published retail-%s\n\n`%s`\n' "$SERVICE" "$IMAGE_URI" >> "$GITHUB_STEP_SUMMARY"
