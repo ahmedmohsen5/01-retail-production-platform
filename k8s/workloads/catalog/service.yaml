@@ -4,6 +4,7 @@ metadata:
   name: catalog
   namespace: retail
   labels:
+    app.kubernetes.io/name: catalog
     app.kubernetes.io/part-of: retail-store
     app.kubernetes.io/component: application
 spec:
