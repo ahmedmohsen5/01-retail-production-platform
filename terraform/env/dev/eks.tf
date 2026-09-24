@@ -13,7 +13,7 @@ module "eks" {
 
   endpoint_private_access = true
   endpoint_public_access  = true
-  public_access_cidrs     = ["154.178.127.47/32"]
+  public_access_cidrs     = ["154.178.141.5/32"]
 
   enabled_cluster_log_types = [
     "api",
