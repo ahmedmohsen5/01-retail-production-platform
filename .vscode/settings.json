@@ -1,0 +1,16 @@
+{
+  "yaml.schemas": {
+    "kubernetes": ["k8s/**/*.yml", "k8s/**/*.yaml"]
+  },
+  "yaml.completion": true,
+  "yaml.validate": true,
+  "yaml.hover": true,
+  "[yaml]": {
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": false,
+      "strings": true
+    },
+    "editor.suggestOnTriggerCharacters": true
+  }
+}
