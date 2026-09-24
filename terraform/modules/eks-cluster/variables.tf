@@ -52,3 +52,11 @@ variable "tags" {
   description = "Tags applied to resources created by the module."
   type        = map(string)
 }
+
+variable "authentication_mode" {
+  type = string
+}
+
+variable "access_entries" {
+  type = string
+}
