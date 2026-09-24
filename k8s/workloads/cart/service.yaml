@@ -3,6 +3,9 @@ kind: Service
 metadata:
   name: cart
   namespace: retail
+  labels:
+    app.kubernetes.io/part-of: retail-store
+    app.kubernetes.io/component: application
 spec:
   selector:
     app.kubernetes.io/name: cart
