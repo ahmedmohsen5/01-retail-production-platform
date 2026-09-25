@@ -1,7 +1,13 @@
 name: AWS Identity and Image Publish
+run-name: ${{ inputs.startup_id || 'Manual image publish' }}
 
 on:
   workflow_dispatch:
+    inputs:
+      startup_id:
+        description: Correlation ID supplied by start_project.ps1
+        required: false
+        type: string
 
 permissions:
   contents: read

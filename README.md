@@ -4,7 +4,50 @@ A production-oriented DevOps / Platform Engineering project built around the AWS
 
 The purpose of this repository is to design and build the infrastructure, delivery platform, security controls, observability, and operational practices independently rather than reuse an existing DevOps implementation.
 
-## Project Goal
+## Start the AWS project
+
+From PowerShell, run:
+
+```powershell
+.\start_project.ps1
+```
+
+Before the first run, commit and push the updated workflow in
+`.github/workflows/aws-identity-test.yml` to `main`. Install AWS CLI, Terraform,
+GitHub CLI, and kubectl; authenticate AWS and run `gh auth login`. Your GitHub
+account needs permission to dispatch workflows and set repository variables.
+The script builds the application committed on remote `main`; local application
+changes must be pushed first.
+
+The existing S3 state backend in `terraform/env/dev/backend.hcl` and GitHub OIDC
+provider must already exist. The AWS identity must have infrastructure permissions
+and EKS access (currently configured in `terraform/env/dev/eks.tf`). This command
+creates or updates billable AWS infrastructure and automatically applies the
+Terraform plan.
+
+The script detects your public IPv4 address, writes the ignored
+`terraform/env/dev/startup.auto.tfvars.json`, initializes and applies Terraform,
+sets the GitHub AWS variables, and starts the image publishing workflow. After
+that exact build succeeds, it verifies the five ECR images, replaces image tags in
+the Kubernetes deployment files, updates kubeconfig, applies the manifests, and
+waits for all deployments to roll out. Native command failures stop the script.
+The final output lists pods and services; a load balancer address may take longer
+to appear. Each run publishes a new set of images.
+
+Optional overrides:
+
+```powershell
+.\start_project.ps1 -PublicIp '203.0.113.10' -BuildTimeoutMinutes 90
+.\start_project.ps1 -BackendConfig 'C:\config\dev-backend.hcl'
+```
+
+Use your actual public IP for `-PublicIp`. Relative backend paths resolve under
+`terraform/env/dev`. A build timeout stops local deployment but does not cancel
+the GitHub run. The script leaves generated image changes available for review
+and does not commit or push them. Direct Terraform runs also require
+`eks_public_access_cidrs`, through the generated file or your own variable file.
+
+## Platform goals
 
 Build a complete production delivery path for a realistic microservices application, including:
 
