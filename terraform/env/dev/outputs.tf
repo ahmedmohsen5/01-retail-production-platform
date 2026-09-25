@@ -77,3 +77,11 @@ output "github_actions_role_arn" {
   description = "IAM role ARN assumed by GitHub Actions through OIDC"
   value       = aws_iam_role.github_actions.arn
 }
+
+output "aws_load_balancer_controller_role_arn" {
+  value = aws_iam_role.aws_load_balancer_controller.arn
+}
+
+output "aws_load_balancer_controller_pod_identity_association_id" {
+  value = aws_eks_pod_identity_association.aws_load_balancer_controller.association_id
+}

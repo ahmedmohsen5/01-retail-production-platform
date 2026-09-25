@@ -47,6 +47,30 @@ the GitHub run. The script leaves generated image changes available for review
 and does not commit or push them. Direct Terraform runs also require
 `eks_public_access_cidrs`, through the generated file or your own variable file.
 
+## Destroy the dev project
+
+```powershell
+.\destroy_project.ps1
+```
+
+This command automatically destroys the dev Terraform stack and permanently
+deletes all images in its ECR repositories. It checks the AWS account, generates
+a destroy plan, removes retail Kubernetes services and ingresses while the load
+balancer controller is still running, deletes the retail namespace, and removes
+the infrastructure. It also works after a partial destroy. Failures stop the
+script; fix the reported issue and rerun it.
+
+Use the same AWS credentials and backend as startup. AWS CLI and Terraform are
+required; kubectl and working EKS API access are required if the cluster still
+exists. Stop any running startup or image publishing workflow before teardown.
+Resources created manually outside Terraform and outside the retail namespace
+are not covered. The source files, bootstrap state bucket, shared GitHub OIDC
+provider, and GitHub repository remain available for the next startup.
+
+Optional: `-BackendConfig 'C:\config\dev-backend.hcl'`. Account and region
+defaults are `147723036683` and `us-east-1`; use `-ExpectedAccountId` and `-Region`
+only when targeting a different configured dev environment.
+
 ## Platform goals
 
 Build a complete production delivery path for a realistic microservices application, including:
