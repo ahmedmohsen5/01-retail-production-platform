@@ -16,9 +16,9 @@ resource "aws_subnet" "public" {
   availability_zone       = data.aws_availability_zones.available.names[each.value.availability_zone]
   map_public_ip_on_launch = true
   tags = {
-    Name        = "retail-platform-public-subnet-${each.key}"
-    environment = "dev"
-    project     = "retail-platform"
+    Name                     = "retail-platform-public-subnet-${each.key}"
+    environment              = "dev"
+    project                  = "retail-platform"
     "kubernetes.io/role/elb" = "1"
   }
 }
