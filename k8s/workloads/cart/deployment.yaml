@@ -24,7 +24,7 @@ spec:
       serviceAccountName: cart
       containers:
       - name: cart
-        image: 147723036683.dkr.ecr.us-east-1.amazonaws.com/retail-cart:e4c9ab09ef9fc04607c81dce94485eaa18d0a25a-36056467799-1
+        image: 147723036683.dkr.ecr.us-east-1.amazonaws.com/retail-cart:a6285f6d3a33ea41cb0de01edbbe2bcee6efcfd1-36147074794-1
         imagePullPolicy: IfNotPresent
         resources:
           requests:

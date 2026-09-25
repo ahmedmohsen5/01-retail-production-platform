@@ -1,0 +1,13 @@
+clusterName: retail-platform-dev
+region: us-east-1
+vpcId: vpc-0cbf34502b3645f62
+
+replicaCount: 2
+
+serviceAccount:
+  create: false
+  name: aws-load-balancer-controller
+
+defaultTags:
+  environment: dev
+  project: retail-platform

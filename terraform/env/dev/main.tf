@@ -19,6 +19,7 @@ resource "aws_subnet" "public" {
     Name        = "retail-platform-public-subnet-${each.key}"
     environment = "dev"
     project     = "retail-platform"
+    "kubernetes.io/role/elb" = "1"
   }
 }
 
