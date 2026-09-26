@@ -143,7 +143,8 @@ jobs:
             - name: validate raw kubernetes manifest
               shell: bash 
               run: |
-                    find k8s -type f \( -name '*.yaml' -o -name '*.yml' \) 	            
+                    find k8s -type f \
+                    ( -name '*.yaml' -o -name '*.yml' \) 	 \           
                     ! -path 'k8s/platform/aws-load-balancer-controller/values-dev.yaml' \ 	            
                     -print0 	          \
                     | xargs -0 kubeconform 	         \     
