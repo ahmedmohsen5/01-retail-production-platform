@@ -1,0 +1,208 @@
+name: PR Validation
+
+on:
+    pull_request: 
+        branches: 
+            - main
+    
+permissions: 
+    contents: read
+    id-token: none
+
+concurrency: 
+    group: pr-validation-${{github.event.pull_request.number}}
+    cancel-in-progress: true
+
+jobs:
+    java-validation:
+        name: java - ${{ matrix.service }}
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+        strategy:
+            fail-fast: false
+            matrix:
+                service: [ui, cart, orders]
+        steps:
+            - name: checkout
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+              with:
+                  persist-credentials: false
+            - name: set up java 21
+              uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6
+              with:
+                  distribution: temurin
+                  java-version: "21"
+                  cache: maven
+                  cache-dependency-path: application/${{ matrix.service }}/pom.xml
+            - name: validation service
+              working-directory: application/${{ matrix.service }}
+              shell: bash
+              run: |
+                if [[ "${{ matrix.service }}" == "ui" ]]; then
+                    mvn -B verify
+                else
+                    ./mvnw -B test -DexcludedGroups=integration
+                fi
+
+    catalog-validation:
+        name: go - catalog
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - name: checkout
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+              with:
+                  persist-credentials: false
+            - name: set up go 
+              uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e
+              with:
+                  go-version: "1.25.14"
+                  cache-dependency-path: application/catalog/go.sum
+            - name: Run Catalog tests
+              working-directory: application/catalog
+              run: go test ./...
+
+
+    checkout-validation:
+        name: node - checkout
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - name: checkout
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+              with:
+                  persist-credentials: false
+            - name: set up node
+              uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+              with:
+                  node-version: "22"
+                  cache: yarn
+                  cache-dependency-path: application/checkout/yarn.lock
+            - name: enable corepack
+              run: corepack enable
+            - name: install dependances
+              working-directory: application/checkout
+              run: yarn install --immutable
+            - name: Lint
+              working-directory: application/checkout
+              run: yarn lint
+            - name: build
+              working-directory: application/checkout
+              run: yarn build
+
+
+    terraform-validation:
+        name: terraform
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+          - name: checkout
+            uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+            with:
+                persist-credentials: false
+          - name: set up terraform 
+            uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e
+            with:
+                terraform_version: 1.16.4
+          - name: Terraform format
+            run: terraform fmt -check -recursive terraform/
+          - name: validate bootstrap
+            run: |
+              terraform -chdir=terraform/bootstrap init -backend=false -input=false
+              terraform -chdir=terraform/bootstrap validate -no-color
+          - name: validate dev environment
+            run: |
+              terraform -chdir=terraform/env/dev init -backend=false -input=false
+              terraform -chdir=terraform/env/dev validate -no-color
+        
+    
+    kubernetes-validation:
+        name: kubernetes
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - name: checkout
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+              with:
+                persist-credentials: false
+            - name: install kubeconform v0.8.0
+              shell: bash
+              run: |
+                version="v0.8.0"
+                archive="kubeconform-linux-amd64.tar.gz"
+                base="https://github.com/yannh/kubeconform/releases/download/${version}"
+                curl -fsSLO "${base}/${archive}"
+                curl -fsSLO "${base}/CHECKSUMS"
+                grep "  ${archive}$" CHECKSUMS | sha256sum --check -
+                    tar -xzf "${archive}"
+                sudo install -m 0755 kubeconform /usr/local/bin/kubeconform
+                kubeconform -v
+            - name: validate raw kubernetes manifest
+              shell: bash 
+              run: |
+                    find k8s -type f \( -name '*.yaml' -o -name '*.yml' \) ! -path 'k8s/platform/aws-load-balancer-controller/values-dev.yaml' -print0 | xargs -0 -r kubeconform -strict -summary -kubernetes-version 1.36.0
+            - name: setup helm
+              uses: Azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310
+            - name: render aws load balancer controller
+              shell: bash
+              run: |
+                    helm repo add eks https://aws.github.io/eks-charts
+                    helm repo update
+                    helm template aws-load-balancer-controller eks/aws-load-balancer-controller \
+                      --namespace kube-system \
+                      --version 3.5.0 \
+                      -f k8s/platform/aws-load-balancer-controller/values-dev.yaml \
+                      > /tmp/aws-load-balancer-controller.yaml
+
+                      kubeconform -strict -summary \
+                      -kubernetes-version 1.36.0 \
+                      -skip 'IngressClassParams' \
+                      /tmp/aws-load-balancer-controller.yaml
+    
+
+    docker-validation:
+        name: docker
+        runs-on: ubuntu-latest
+        timeout-minutes: 45
+        steps:
+            - name: checkout
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+              with:
+                persist-credentials: false
+            - name: docker runtime
+              run: docker version
+            - name: build all service images without push
+              shell: bash
+              run: | 
+                for service in ui catalog cart orders checkout; do
+                    echo "============build retail-${service}========="
+                    docker build -f "docker/${service}"/Dockerfile ./application
+                done
+
+    gate:
+        name: PR validation gate
+        if: always()
+        runs-on: ubuntu-latest
+        needs: 
+            - java-validation
+            - catalog-validation
+            - checkout-validation
+            - docker-validation
+            - kubernetes-validation
+            - terraform-validation
+        steps:
+          - name: verify required jobs
+            shell: bash
+            run: |
+                test "${{ needs.java-validation.result }}" = "success"
+                test "${{ needs.catalog-validation.result }}" = "success"
+                test "${{ needs.checkout-validation.result }}" = "success"
+                test "${{ needs.terraform-validation.result }}" = "success"
+                test "${{ needs.kubernetes-validation.result }}" = "success"
+                test "${{ needs.docker-validation.result }}" = "success"
+
+
+
+
+
+
