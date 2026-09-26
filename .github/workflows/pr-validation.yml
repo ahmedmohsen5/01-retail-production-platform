@@ -143,14 +143,7 @@ jobs:
             - name: validate raw kubernetes manifest
               shell: bash 
               run: |
-                    find k8s -type f \
-                    \( -name '*.yaml' -o -name '*.yml' \) 	 \           
-                    ! -path 'k8s/platform/aws-load-balancer-controller/values-dev.yaml' \ 	            
-                    -print0 | 
-                    xargs -0 kubeconform 	         \     
-                    -strict 	              \
-                    -summary 	              \
-                    -kubernetes-version 1.36.0 
+                    find k8s -type f \( -name '*.yaml' -o -name '*.yml' \) ! -path 'k8s/platform/aws-load-balancer-controller/values-dev.yaml' -print0 | xargs -0 -r kubeconform -strict -summary -kubernetes-version 1.36.0
             - name: setup helm
               uses: Azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310
             - name: render aws load balancer controller
