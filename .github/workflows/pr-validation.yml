@@ -146,8 +146,8 @@ jobs:
                     find k8s -type f \
                     \( -name '*.yaml' -o -name '*.yml' \) 	 \           
                     ! -path 'k8s/platform/aws-load-balancer-controller/values-dev.yaml' \ 	            
-                    -print0 	          \
-                    | xargs -0 kubeconform 	         \     
+                    -print0 | 
+                    xargs -0 kubeconform 	         \     
                     -strict 	              \
                     -summary 	              \
                     -kubernetes-version 1.36.0 
