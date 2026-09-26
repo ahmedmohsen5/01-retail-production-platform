@@ -152,11 +152,12 @@ jobs:
                     helm repo add eks https://aws.github.io/eks-charts
                     helm repo update
                     helm template aws-load-balancer-controller \ 	
-                    eks/aws-load-balancer-controller\ 	            
+                    eks/aws-load-balancer-controller \ 	            
                     --namespace kube-system \	            
                     --version 3.5.0 	 \           
                     -f k8s/platform/aws-load-balancer-controller/values-dev.yaml 	\            
                     > /tmp/aws-load-balancer-controller.yaml \
+                    
                     kubeconform -strict  -summary 	-kubernetes-version 1.36.0  /tmp/aws-load-balancer-controller.yaml
     
 
