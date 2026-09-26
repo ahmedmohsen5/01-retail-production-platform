@@ -38,7 +38,7 @@ jobs:
               working-directory: application/${{ matrix.service }}
               shell: bash
               run: |
-                if [${{matrix.service}} == "ui"]; then
+                if [[ "${{ matrix.service }}" == "ui" ]]; then
                     mvn -B verify
                 else
                     ./mvnw -B test -DexcludedGroups=integration
