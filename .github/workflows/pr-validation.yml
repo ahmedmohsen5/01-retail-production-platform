@@ -182,7 +182,7 @@ jobs:
               run: | 
                 for service in ui catalog cart orders checkout; do
                     echo "============build retail-${service}========="
-                    docker build --file "docker/${service}"/Dockerfile .
+                    docker build -f "docker/${service}"/Dockerfile ./application
                 done
 
     gate:
