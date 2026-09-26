@@ -104,10 +104,6 @@ jobs:
             uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e
             with:
                 terraform_version: 1.16.4
-          - name: checkout
-            uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-            with:
-              persist-credentials: false
           - name: Terraform format
             run: terraform fmt -check -recursive terraform/
           - name: validate bootstrap
@@ -117,6 +113,7 @@ jobs:
           - name: validate dev environment
             run: |
               terraform -chdir=terraform/env/dev init -backend=false -input=false
+              terraform -chdir=terraform/env/dev validate -no-color
         
     
     kubernetes-validation:
@@ -151,14 +148,13 @@ jobs:
               run: |
                     helm repo add eks https://aws.github.io/eks-charts
                     helm repo update
-                    helm template aws-load-balancer-controller \ 	
-                    eks/aws-load-balancer-controller \ 	            
-                    --namespace kube-system \	            
-                    --version 3.5.0 	 \           
-                    -f k8s/platform/aws-load-balancer-controller/values-dev.yaml 	\            
-                    > /tmp/aws-load-balancer-controller.yaml \
-                    
-                    kubeconform -strict  -summary 	-kubernetes-version 1.36.0  /tmp/aws-load-balancer-controller.yaml
+                    helm template aws-load-balancer-controller eks/aws-load-balancer-controller \
+                      --namespace kube-system \
+                      --version 3.5.0 \
+                      -f k8s/platform/aws-load-balancer-controller/values-dev.yaml \
+                      > /tmp/aws-load-balancer-controller.yaml
+
+                      kubeconform -strict -summary -kubernetes-version 1.36.0 /tmp/aws-load-balancer-controller.yaml
     
 
     docker-validation:
