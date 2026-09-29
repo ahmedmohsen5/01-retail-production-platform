@@ -203,16 +203,16 @@ jobs:
 
         - name: Test container selector
           run: python3 .github/scripts/test_select_container_builds.py
-
+        
+        - name: test path
+          run: ls .github/scripts/detect_container_changes.sh 
         - name: Select affected services
           id: select
           shell: bash
           env:
             BASE_SHA: ${{ github.event.pull_request.base }}
             HEAD_SHA: ${{ github.event.pull_request.head }}
-          run: |
-            ls .github/scripts/detect_container_changes.sh
-#            bash .github/scripts/detect_container_changes.sh
+          run: bash .github/scripts/detect_container_changes.sh
 
     container-build:
       name: Container — ${{ matrix.service }}
