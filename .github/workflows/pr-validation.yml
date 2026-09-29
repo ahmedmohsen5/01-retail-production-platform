@@ -210,7 +210,9 @@ jobs:
           env:
             BASE_SHA: ${{ github.event.pull_request.base }}
             HEAD_SHA: ${{ github.event.pull_request.head }}
-          run: bash .github/scripts/detect_container_changes.sh
+          run: |
+            ls .github/scripts/detect_container_changes.sh
+            bash .github/scripts/detect_container_changes.sh
 
     container-build:
       name: Container — ${{ matrix.service }}
