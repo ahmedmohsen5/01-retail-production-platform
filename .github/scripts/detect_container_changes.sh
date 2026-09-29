@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-#set -euo pipeli
+set -euo pipeli
 
 git cat-file -e "${BASE_SHA}^{commit}"
 git cat-file -e "${HEAD_SHA}^{commit}"
