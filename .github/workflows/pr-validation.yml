@@ -179,7 +179,8 @@ jobs:
                 test "${{ needs.checkout-validation.result }}" = "success"
                 test "${{ needs.terraform-validation.result }}" = "success"
                 test "${{ needs.kubernetes-validation.result }}" = "success"
-                if [[ "${{ needs.detect-container-changes.outputs.has_change }}" == 'true']]; then
+                test "${{ needs.detect-container-changes.result }}" = "success"
+                if [[ "${{ needs.detect-container-changes.outputs.has_change }}" == 'true' ]]; then
                   test "${{ needs.container-build.result}}" = "success"
                 else 
                   test "${{ needs.container-build.result}}" = "skipped"
@@ -210,8 +211,8 @@ jobs:
           id: select
           shell: bash
           env:
-            BASE_SHA: ${{ github.event.pull_request.base }}
-            HEAD_SHA: ${{ github.event.pull_request.head }}
+            BASE_SHA: ${{ github.event.pull_request.base.sha }}
+            HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           run: bash .github/scripts/detect_container_changes.sh
 
     container-build:
@@ -247,7 +248,7 @@ jobs:
           id: build
           uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc
           with:
-            context: ${{ matrix.service }}
+            context: ${{ matrix.context }}
             file: ${{ matrix.dockerfile }}
             push: false
             load: false
@@ -269,13 +270,13 @@ jobs:
             {
               echo "### Container build — ${SERVICE}"
               echo
-              echo "- Result: `${BUILD_OUTCOME}`"
-              echo "- Source SHA: `${SOURCE_SHA}`"
-              echo "- Dockerfile: `${DOCKERFILE}`"
-              echo "- Context: `${CONTEXT}`"
-              echo "- Validation tag: `${IMAGE_TAG}`"
-              echo "- Cache scope: `retail-${SERVICE}`"
-              echo "- Published: `false`"
+              printf -- '- Result: `%s`\n' "$BUILD_OUTCOME"
+              printf -- '- Source SHA: `%s`\n' "$SOURCE_SHA"
+              printf -- '- Dockerfile: `%s`\n' "$DOCKERFILE"
+              printf -- '- Context: `%s`\n' "$CONTEXT"
+              printf -- '- Validation tag: `%s`\n' "$IMAGE_TAG"
+              printf -- '- Cache scope: `retail-%s`\n' "$SERVICE"
+              printf -- '- Published: `false`\n'
             } >> "${GITHUB_STEP_SUMMARY}"
             
 
