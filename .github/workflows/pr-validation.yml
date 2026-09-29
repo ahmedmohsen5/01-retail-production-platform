@@ -158,27 +158,6 @@ jobs:
                       -kubernetes-version 1.36.0 \
                       -skip 'IngressClassParams' \
                       /tmp/aws-load-balancer-controller.yaml
-    
-
-    docker-validation:
-        name: docker
-        runs-on: ubuntu-latest
-        timeout-minutes: 45
-        steps:
-            - name: checkout
-              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-              with:
-                persist-credentials: false
-            - name: docker runtime
-              run: docker version
-            - name: build all service images without push
-              shell: bash
-              run: | 
-                for service in ui catalog cart orders checkout; do
-                    echo "============build retail-${service}========="
-                    docker build -f "docker/${service}"/Dockerfile ./application
-                done
-
     gate:
         name: PR validation gate
         if: always()
@@ -187,9 +166,10 @@ jobs:
             - java-validation
             - catalog-validation
             - checkout-validation
-            - docker-validation
+            - container-build
             - kubernetes-validation
             - terraform-validation
+            - detect-container-changes
         steps:
           - name: verify required jobs
             shell: bash
@@ -199,10 +179,101 @@ jobs:
                 test "${{ needs.checkout-validation.result }}" = "success"
                 test "${{ needs.terraform-validation.result }}" = "success"
                 test "${{ needs.kubernetes-validation.result }}" = "success"
-                test "${{ needs.docker-validation.result }}" = "success"
+                if [[ "${{ needs.detect-container-changes.outputs.has_change }}" == 'true']]; then
+                  test "${{ needs.container-build.result}}" = "success"
+                else 
+                  test "${{ needs.container-build.result}}" = "skipped"
+                fi
+          
+#-------------------------------------------------------------------------------
 
+    detect-container-changes:
+      runs-on: ubuntu-latest
+      timeout-minutes: 5   
+      outputs:
+        matrix: ${{ steps.select.outputs.matrix }}
+        has_change: ${{ steps.select.outputs.has_change }}
+        selected_services: ${{ steps.select.outputs.selected_services }}
+      steps:
+        - name: checkout
+          uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 
+          with:
+            persist-credentials: false
+            fetch-depth: 0
 
+        - name: Test container selector
+          run: python3 .github/scripts/test_select_container_builds.py
 
+        - name: Select affected services
+          id: select
+          shell: bash
+          env:
+            BASE_SHA: ${{ github.event.pull_request.base }}
+            HEAD_SHA: ${{ github.event.pull_request.head }}
+          run: bash .github/scripts/detect_container_changes.sh
 
+    container-build:
+      name: Container — ${{ matrix.service }}
+      needs: 
+        - detect-container-changes
+      if: needs.detect-container-changes.outputs.has_change == 'true'
+      runs-on: ubuntu-latest
+      timeout-minutes: 30
 
+      strategy:
+        fail-fast: false
+        matrix: ${{ fromJson(needs.detect-container-changes.outputs.matrix) }}
+
+      steps:
+        - name: checkout
+          uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+          with:
+            persist-credentials: false
+
+        - name: set up docker buildx
+          uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069
+
+        - name: Prepare image metadata
+          id: meta
+          shell: bash
+          env:
+            SOURCE_SHA: ${{ github.event.pull_request.head.sha }}
+          run: |
+            echo "short_sha=${SOURCE_SHA:0:12}" >> "${GITHUB_OUTPUT}"
+
+        - name: Build ${{ matrix.service }}
+          id: build
+          uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc
+          with:
+            context: ${{ matrix.service }}
+            file: ${{ matrix.dockerfile }}
+            push: false
+            load: false
+            tags: retail-${{ matrix.service }}:pr-${{ steps.meta.outputs.short_sha}}
+            cache-from: type=gha,scope=retail-${{ matrix.service }}
+            cache-to: type=gha,mode=max,scope=retail-${{ matrix.service }}
+          
+        - name: publish build summary
+          if: always()
+          shell: bash
+          env:
+            SERVICE: ${{ matrix.service }}
+            DOCKERFILE: ${{ matrix.dockerfile }}
+            CONTEXT: ${{ matrix.context }}
+            SOURCE_SHA: ${{ github.event.pull_request.head.sha }}
+            IMAGE_TAG: retail-${{ matrix.service }}:pr-${{ steps.meta.outputs.short_sha }}
+            BUILD_OUTCOME: ${{ steps.build.outcome }}
+          run: |
+            {
+              echo "### Container build — ${SERVICE}"
+              echo
+              echo "- Result: `${BUILD_OUTCOME}`"
+              echo "- Source SHA: `${SOURCE_SHA}`"
+              echo "- Dockerfile: `${DOCKERFILE}`"
+              echo "- Context: `${CONTEXT}`"
+              echo "- Validation tag: `${IMAGE_TAG}`"
+              echo "- Cache scope: `retail-${SERVICE}`"
+              echo "- Published: `false`"
+            } >> "${GITHUB_STEP_SUMMARY}"
+            
 
