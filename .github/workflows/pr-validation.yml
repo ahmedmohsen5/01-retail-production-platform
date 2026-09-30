@@ -259,39 +259,6 @@ jobs:
             version: v0.74.0
             cache: true
 
-        - name: create image scan report
-          shell: bash
-          env:
-            IMAGE_REF: retail-${{ matrix.service }}:pr-${{ steps.meta.outputs.short_sha }}
-          run: |
-            mkdir -p report
-
-            trivy image \
-              --severity HIGH,CRITICAL \
-              --format json \
-              --output "reports/trivy-image-${{ matrix.service }}.json" \
-              "${IMAGE_REF}"
-        
-        - name: Gate fixable HIGH and CRITICAL image vulnerabilities
-          env:
-            IMAGE_REF: retail-${{ matrix.service }}:pr-${{ steps.meta.outputs.short_sha }}
-          shell: bash
-          run: |
-            trivy image \
-              --severity HIGH,CRITICAL \
-              --ignore-unfixed \
-              --exit-code 1 \
-              "${IMAGE_REF}"
-        - name: Upload image security report
-          if: always()
-          uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-          with:
-            name: trivy-image-${{ matrix.service }}-${{ github.event.pull_request.head.sha }}
-            path: reports/trivy-image-${{ matrix.service }}.json
-            if-no-files-found: error
-            retention-days: 14
-            
-
         - name: Build ${{ matrix.service }}
           id: build
           uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc
@@ -326,8 +293,38 @@ jobs:
               printf -- '- Cache scope: `retail-%s`\n' "$SERVICE"
               printf -- '- Published: `false`\n'
             } >> "${GITHUB_STEP_SUMMARY}"
+        - name: create image scan report
+          shell: bash
+          env:
+            IMAGE_REF: retail-${{ matrix.service }}:pr-${{ steps.meta.outputs.short_sha }}
+          run: |
+            mkdir -p report
+
+            trivy image \
+              --severity HIGH,CRITICAL \
+              --format json \
+              --output "reports/trivy-image-${{ matrix.service }}.json" \
+              "${IMAGE_REF}"
+        
+        - name: Gate fixable HIGH and CRITICAL image vulnerabilities
+          env:
+            IMAGE_REF: retail-${{ matrix.service }}:pr-${{ steps.meta.outputs.short_sha }}
+          shell: bash
+          run: |
+            trivy image \
+              --severity HIGH,CRITICAL \
+              --ignore-unfixed \
+              --exit-code 1 \
+              "${IMAGE_REF}"
+        - name: Upload image security report
+          if: always()
+          uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+          with:
+            name: trivy-image-${{ matrix.service }}-${{ github.event.pull_request.head.sha }}
+            path: reports/trivy-image-${{ matrix.service }}.json
+            if-no-files-found: error
+            retention-days: 14
             
-    
     sonarqube-analyses:
       name: sonarqube
       runs-on: ubuntu-latest
