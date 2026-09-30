@@ -14,7 +14,7 @@ resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = each.value.cidr_block
   availability_zone       = data.aws_availability_zones.available.names[each.value.availability_zone]
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
   tags = {
     Name                     = "retail-platform-public-subnet-${each.key}"
     environment              = "dev"
@@ -194,6 +194,9 @@ resource "aws_vpc_security_group_ingress_rule" "eks-node-to-node-traffic" {
   referenced_security_group_id = aws_security_group.eks-node-sg.id
 }
 
+# Nodes need HTTPS through NAT for public ECR/S3 and external service APIs.
+# Limited to TCP/443; replace with VPC endpoints/egress proxy when available.
+#trivy:ignore:AWS-0104
 resource "aws_vpc_security_group_egress_rule" "eks-node-https" {
   security_group_id = aws_security_group.eks-node-sg.id
   from_port         = 443

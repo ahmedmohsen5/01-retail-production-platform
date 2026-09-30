@@ -2,7 +2,7 @@ variable "eks_public_access_cidrs" {
   description = "IPv4 CIDRs allowed to reach the EKS API; set by start_project.ps1."
   type        = list(string)
   validation {
-    condition     = length(var.eks_public_access_cidrs) > 0 && alltrue([for cidr in var.eks_public_access_cidrs : can(cidrnetmask(cidr)) && cidr != "0.0.0.0/0"])
+    condition     = length(var.eks_public_access_cidrs) > 0 && alltrue([for cidr in var.eks_public_access_cidrs : can(cidrnetmask(cidr)) && try(tonumber(split("/", cidr)[1]) > 0, false)])
     error_message = "Supply valid IPv4 CIDRs, excluding unrestricted public access."
   }
 }

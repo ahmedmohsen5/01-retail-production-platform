@@ -22,10 +22,28 @@ spec:
         app.kubernetes.io/component: application
     spec:
       serviceAccountName: orders
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+        - name: tmp
+          emptyDir: {}
       containers:
       - name: orders
         image: 147723036683.dkr.ecr.us-east-1.amazonaws.com/retail-orders:a6285f6d3a33ea41cb0de01edbbe2bcee6efcfd1-36147074794-1
         imagePullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop: ["ALL"]
+        volumeMounts:
+          - name: tmp
+            mountPath: /tmp
         resources:
           requests:
             cpu: "250m"

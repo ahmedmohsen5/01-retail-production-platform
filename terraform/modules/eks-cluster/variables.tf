@@ -36,6 +36,10 @@ variable "endpoint_public_access" {
 variable "public_access_cidrs" {
   description = "CIDR blocks permitted to reach the public Amazon EKS API server endpoint."
   type        = list(string)
+  validation {
+    condition     = length(var.public_access_cidrs) > 0 && alltrue([for cidr in var.public_access_cidrs : can(cidrnetmask(cidr)) && try(tonumber(split("/", cidr)[1]) > 0, false)])
+    error_message = "Supply valid IPv4 CIDRs with a nonzero prefix length."
+  }
 }
 
 variable "enabled_cluster_log_types" {

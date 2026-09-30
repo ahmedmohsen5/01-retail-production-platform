@@ -18,7 +18,10 @@ FROM eclipse-temurin:21.0.12_8-jre-noble AS runtime
 
 WORKDIR /app
 
-RUN groupadd -g 10001 app \
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd -g 10001 app \
     && useradd -u 10001 -g 10001 --no-create-home --shell /usr/sbin/nologin app
 
 COPY --from=build --chown=10001:10001 \
