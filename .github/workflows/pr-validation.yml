@@ -298,7 +298,7 @@ jobs:
           env:
             IMAGE_REF: retail-${{ matrix.service }}:pr-${{ steps.meta.outputs.short_sha }}
           run: |
-            mkdir -p report
+            mkdir -p reports
 
             trivy image \
               --severity HIGH,CRITICAL \
