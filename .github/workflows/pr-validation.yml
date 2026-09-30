@@ -350,7 +350,7 @@ jobs:
             trivy fs --scanners secret --severity HIGH,CRITICAL --offline-scan --format json --output reports/trivy-fs-secrets.json .
 
         - name: Gate exposed secrets
-          run: trivy fs --scanners secret --offline-scan -e-xit-code 1 .
+          run: trivy fs --scanners secret --offline-scan --exit-code 1 .
 
         - name:  Gate fixable HIGH and CRITICAL vulnerabilities
           run: trivy fs --scanners vuln --severity HIGH,CRITICAL --offline-scan --ignore-unfixed --exit-code 1 .
