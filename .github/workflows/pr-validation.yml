@@ -344,7 +344,7 @@ jobs:
 
         - name: Report repository vulnerabilities
           run: |
-            trivy fs --scanners vuln --severity HIGH,CRITICAL  --format json --output reports/trivy-fs-vulnerabilities.json .
+            trivy fs --scanners vuln --severity HIGH,CRITICAL --offline-scan --format json --output reports/trivy-fs-vulnerabilities.json .
         - name: Report repository secrets
           run: |
             trivy fs --scanners secret --severity HIGH,CRITICAL  --format json --output reports/trivy-fs-secrets.json .
