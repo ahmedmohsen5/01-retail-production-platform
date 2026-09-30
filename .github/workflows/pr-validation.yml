@@ -172,6 +172,9 @@ jobs:
             - kubernetes-validation
             - terraform-validation
             - detect-container-changes
+            - sonarqube-analyses
+            - trivy-iac
+            - trivy-repo
         steps:
           - name: verify required jobs
             shell: bash
@@ -182,6 +185,10 @@ jobs:
                 test "${{ needs.terraform-validation.result }}" = "success"
                 test "${{ needs.kubernetes-validation.result }}" = "success"
                 test "${{ needs.detect-container-changes.result }}" = "success"
+                test "${{ needs.trivy-repo.result}}" == "success"
+                test "${{ needs.trivy-iac.result}}" == "success"
+                test "${{ needs.terraform-validation.result}}" == "success"
+                test "${{ needs.sonarqube-analyses.result}}" == "success"
                 if [[ "${{ needs.detect-container-changes.outputs.has_change }}" == 'true' ]]; then
                   test "${{ needs.container-build.result}}" = "success"
                 else 
@@ -246,6 +253,45 @@ jobs:
           run: |
             echo "short_sha=${SOURCE_SHA:0:12}" >> "${GITHUB_OUTPUT}"
 
+        - name: set up trivy
+          uses: aquasecurity/setup-trivy@81e514348e19b6112ce2a7e3ecbafe19c1e1f567
+          with:
+            version: v0.74.0
+            cache: true
+
+        - name: create image scan report
+          shell: bash
+          env:
+            IMAGE_REF: retail-${{ matrix.service }}:pr-${{ steps.meta.outputs.short_sha }}
+          run: |
+            mkdir -p report
+
+            trivy image \
+              --severity HIGH,CRITICAL \
+              --format json \
+              --output "reports/trivy-image-${{ matrix.service }}.json" \
+              "${IMAGE_REF}"
+        
+        - name: Gate fixable HIGH and CRITICAL image vulnerabilities
+          env:
+            IMAGE_REF: retail-${{ matrix.service }}:pr-${{ steps.meta.outputs.short_sha }}
+          shell: bash
+          run: |
+            trivy image \
+              --severity HIGH,CRITICAL \
+              --ignore-unfixed \
+              --exit-code 1 \
+              "${IMAGE_REF}"
+        - name: Upload image security report
+          if: always()
+          uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+          with:
+            name: trivy-image-${{ matrix.service }}-${{ github.event.pull_request.head.sha }}
+            path: reports/trivy-image-${{ matrix.service }}.json
+            if-no-files-found: error
+            retention-days: 14
+            
+
         - name: Build ${{ matrix.service }}
           id: build
           uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc
@@ -253,7 +299,7 @@ jobs:
             context: ${{ matrix.context }}
             file: ${{ matrix.dockerfile }}
             push: false
-            load: false
+            load: true
             tags: retail-${{ matrix.service }}:pr-${{ steps.meta.outputs.short_sha}}
             cache-from: type=gha,scope=retail-${{ matrix.service }}
             cache-to: type=gha,mode=max,scope=retail-${{ matrix.service }}
@@ -321,8 +367,6 @@ jobs:
               -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
               -Dsonar.qualitygate.wait=true
               -Dsonar.qualitygate.timeout=300
-          
-
     trivy-repo:
       name: trivy
       runs-on: ubuntu-latest
@@ -364,4 +408,59 @@ jobs:
             if-no-files-found: error
             retention-days: 14
 
-      
+    trivy-iac:
+      name: Trivy — IaC
+      runs-on: ubuntu-latest
+      timeout-minutes: 15
+      steps:
+        - name: Checkout
+          uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+          with:
+            persist-credentials: false
+        
+        - name: Set up Trivy
+          uses: aquasecurity/setup-trivy@81e514348e19b6112ce2a7e3ecbafe19c1e1f567
+          with:
+            version: v0.74.0
+            cache: true
+
+        - name: Create report directory
+          run: mkdir -p reports
+        - name: report terraform misconfiguration
+          run: |
+            trivy config \
+            --severity HIGH,CRITICAL \
+            --format json \
+            --output reports/trivy-terraform.json \
+            terraform
+
+        - name: report kubernetes misconfigration
+          run: |
+            trivy config \
+              --severity HIGH,CRITICAL \
+              --format json \
+              --output reports/trivy-kubernetes.json \
+              k8s
+
+        - name: gate terraform misconfigration
+          run: |
+            trivy config \
+              --severity HIGH,CRITICAL \
+              --exit-code 1 \
+              terraform
+
+        - name: gate kubernetes misconfigration
+          run: |
+            trivy config \
+              --severity HIGH,CRITICAL \
+              --exit-code 1 \
+              k8s
+
+        - name: upload iac and kubernetes reports
+          if: always()
+          uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+          with:
+            name: trivy-iac-${{github.event.pull_request.head.sha}}
+            path: reports/
+            if-no-files-found: error
+            retention-days: 14
