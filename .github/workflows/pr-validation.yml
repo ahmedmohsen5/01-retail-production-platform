@@ -344,17 +344,18 @@ jobs:
             distribution: temurin
             java-version: "21"
             cache: maven
-        - name: Compile Java bytecode for analysis
-          run: |    
-              mvn -B -f application/ui/pom.xml -DskipTests compile
-              (
-                cd application/cart
-                ./mvnw -B -DskipTests compile
-              )
-              (
-                cd application/orders
-                ./mvnw -B -DskipTests compile
-              )
+        - name: Run Java tests and generate coverage for analysis
+          shell: bash
+          run: |
+              jacoco="org.jacoco:jacoco-maven-plugin:0.8.14"
+              for service in ui cart orders; do
+                (
+                  cd "application/${service}"
+                  mvn -B "${jacoco}:prepare-agent" test "${jacoco}:report" \
+                    -DexcludedGroups=integration
+                  test -s target/site/jacoco/jacoco.xml
+                )
+              done
 
         - name: SonarQube analysis
           uses:  SonarSource/sonarqube-scan-action@ba9859eae8dd6bd29e412f25ddbbef3d032000f4
