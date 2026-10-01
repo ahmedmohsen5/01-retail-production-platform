@@ -4,11 +4,27 @@ resource "aws_cloudwatch_log_group" "eks_control_plane" {
   tags              = var.tags
 }
 
+resource "aws_kms_key" "eks_secrets" {
+  description             = "Encrypt ${var.cluster_name} Kubernetes secrets"
+  enable_key_rotation     = true
+  deletion_window_in_days = 30
+  tags                    = var.tags
+}
+
+# Dev operators access the API from outside the VPC. The caller supplies
+# validated IPv4 allowlists; private endpoint access remains enabled.
+#trivy:ignore:AWS-0040
 resource "aws_eks_cluster" "this" {
   name                      = var.cluster_name
   role_arn                  = var.cluster_role_arn
   version                   = var.kubernetes_version
   enabled_cluster_log_types = var.enabled_cluster_log_types
+  encryption_config {
+    resources = ["secrets"]
+    provider {
+      key_arn = aws_kms_key.eks_secrets.arn
+    }
+  }
   access_config {
     authentication_mode = var.authentication_mode
   }
