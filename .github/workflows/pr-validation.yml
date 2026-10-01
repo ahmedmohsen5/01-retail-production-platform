@@ -559,21 +559,42 @@ jobs:
       name: sonarqube
       runs-on: ubuntu-latest
       timeout-minutes: 20
-      needs:
-        - detect-container-changes
-        - publish-container
       
       steps:
-        - name: verify publish workflow results
+        - name: checkout
+          uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+          with:
+            persist-credentials: false
+            fetch-depth: 0
+        - name: Set up Java 21
+          uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6
+          with:
+            distribution: temurin
+            java-version: "21"
+            cache: maven
+        - name: Run Java tests and generate coverage for analysis
           shell: bash
           run: |
-            test "${{ needs.detect-container-changes.result }}" = "success"
+              jacoco="org.jacoco:jacoco-maven-plugin:0.8.14"
+              for service in ui cart orders; do
+                (
+                  cd "application/${service}"
+                  mvn -B "${jacoco}:prepare-agent" test "${jacoco}:report" \
+                    -DexcludedGroups=integration
+                  test -s target/site/jacoco/jacoco.xml
+                )
+              done
 
-            if [[ "${{ needs.detect-container-changes.outputs.has_change }}" == "true" ]]; then
-              test "${{ needs.publish-container.result }}" = "success"
-            else
-              test "${{ needs.publish-container.result }}" = "skipped"
-            fi
+        - name: SonarQube analysis
+          uses:  SonarSource/sonarqube-scan-action@ba9859eae8dd6bd29e412f25ddbbef3d032000f4
+          env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          with:
+            args: >
+              -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
+              -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
+              -Dsonar.qualitygate.wait=true
+              -Dsonar.qualitygate.timeout=300
     trivy-repo:
       name: trivy
       runs-on: ubuntu-latest
