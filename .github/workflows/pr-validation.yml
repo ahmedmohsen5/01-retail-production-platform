@@ -331,6 +331,7 @@ jobs:
       name: Publish container — ${{ matrix.service }}
       needs: 
         - container-build
+        - detect-container-changes
       if: needs.detect-container-changes.outputs.has_change == 'true'
       runs-on: ubuntu-latest
       timeout-minutes: 15
