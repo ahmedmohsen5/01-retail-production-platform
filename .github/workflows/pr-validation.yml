@@ -489,7 +489,7 @@ jobs:
               echo "image_uri: ${IMAGE_URI}"
               echo "digest: ${DIGEST}"
               echo "already_exists: ${ALREADY_EXISTS}"
-            } >> ${GITHUB_STEP_SUMMARY}
+            } | tee "reports/publish-${SERVICE}.txt" >> ${GITHUB_STEP_SUMMARY}
 
         - name: upload publish evidance
           if: always()
