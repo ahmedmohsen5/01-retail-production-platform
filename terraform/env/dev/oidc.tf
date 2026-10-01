@@ -23,7 +23,7 @@ data "aws_iam_policy_document" "github_actions_assume_role" {
     condition {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = [local.github_oidc_subject, "repo:ahmedmohsen5@36478683/01-retail-production-platform@1357361143:pull_request"]
+      values   = [local.github_oidc_subject]
     }
   }
 }
