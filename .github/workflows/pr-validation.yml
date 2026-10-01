@@ -475,7 +475,7 @@ jobs:
             SOURCE_SHA: ${{ github.sha }}
             IMAGE_URI: ${{ steps.meta.outputs.image_uri }}
             DIGEST: ${{ steps.verify.outputs.digest }}
-            ALREADY_EXISTS: ${{ steps.existing.outputs.exists }}
+            ALREADY_EXISTS: ${{ steps.exist.outputs.existing_digest }}
           run: |
             mkdir -p reports
             if [[ "${ALREADY_EXISTS}" == "true" ]]; then
