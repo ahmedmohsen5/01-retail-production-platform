@@ -71,6 +71,8 @@ force_all_exact = {
     ".github/workflows/pr-validation.yml",
     ".github/scripts/select_container_builds.py",
     ".github/scripts/test_select_container_builds.py",
+    ".github/scripts/detect_container_changes.sh",
+    ".github/workflows/publish-images.yml"   
 }
 
 known_dockerfiles = {

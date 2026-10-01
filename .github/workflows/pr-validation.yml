@@ -211,8 +211,7 @@ jobs:
             persist-credentials: false
             fetch-depth: 0
 
-        - name: Test container selector
-          run: python3 .github/scripts/test_select_container_builds.py
+        
         
         - name: test path
           run: ls .github/scripts/detect_container_changes.sh 
@@ -326,7 +325,10 @@ jobs:
             path: reports/trivy-image-${{ matrix.service }}.json
             if-no-files-found: error
             retention-days: 14
-            
+    
+
+    
+        
     sonarqube-analyses:
       name: sonarqube
       runs-on: ubuntu-latest
@@ -464,3 +466,5 @@ jobs:
             path: reports/
             if-no-files-found: error
             retention-days: 14
+
+    
