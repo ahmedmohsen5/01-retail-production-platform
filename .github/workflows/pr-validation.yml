@@ -540,8 +540,13 @@ jobs:
             echo
             echo "- Source SHA: \`${{ github.sha }}\`"
             echo "- Services published:"
-            for service in ${{ fromJson(needs.detect-container-changes.outputs.selected_services) }}; do
-              echo "  - ${service}"
+            if [[ -z "$SELECTED_SERVICES" ]]; then
+              echo "  - None, or detection output unavailable"
+            else
+              IFS=',' read -r -a services <<< "$SELECTED_SERVICES"
+              for service in "${services[@]}"; do
+                echo "  - ${service}"
+              done
             done
         
     sonarqube-analyses:
