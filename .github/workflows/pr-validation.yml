@@ -396,7 +396,11 @@ jobs:
             IMAGE_TAG: ${{ steps.meta.outputs.image_tag }}
           run: |
             digest="$(
-                aws ecr batch-get-image --repository-name "${REPOSITORY}" --image-ids "imageTag=${IMAGE_TAG}" 	              --query 'images[0].imageId.imageDigest' 	              --output text
+                aws ecr batch-get-image \
+                --repository-name "${REPO}" \
+                --image-ids \
+                "imageTag=${IMAGE_TAG}" \
+                --query 'images[0].imageId.imageDigest' 	              --output text
               )"
             if [[ -n "$digest" && "$digest" != "None" ]]; then
               echo "Image tag already exists in ECR: ${REPO}:${IMAGE_TAG}"
