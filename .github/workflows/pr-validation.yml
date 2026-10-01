@@ -567,9 +567,9 @@ jobs:
         - name: verify publish workflow results
           shell: bash
           run: |
-            test "${{ needs.detect-publish-changes.result }}" = "success"
+            test "${{ needs.detect-container-changes.result }}" = "success"
 
-            if [[ "${{ needs.detect-publish-changes.outputs.has_change }}" == "true" ]]; then
+            if [[ "${{ needs.detect-container-changes.outputs.has_change }}" == "true" ]]; then
               test "${{ needs.publish-container.result }}" = "success"
             else
               test "${{ needs.publish-container.result }}" = "skipped"
