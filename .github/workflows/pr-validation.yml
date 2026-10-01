@@ -548,6 +548,9 @@ jobs:
       name: sonarqube
       runs-on: ubuntu-latest
       timeout-minutes: 20
+      needs:
+        - detect-container-changes
+        - publish-container
       
       steps:
         - name: verify publish workflow results
@@ -556,9 +559,9 @@ jobs:
             test "${{ needs.detect-publish-changes.result }}" = "success"
 
             if [[ "${{ needs.detect-publish-changes.outputs.has_change }}" == "true" ]]; then
-              test "${{ needs.publish-images.result }}" = "success"
+              test "${{ needs.publish-container.result }}" = "success"
             else
-              test "${{ needs.publish-images.result }}" = "skipped"
+              test "${{ needs.publish-container.result }}" = "skipped"
             fi
     trivy-repo:
       name: trivy
