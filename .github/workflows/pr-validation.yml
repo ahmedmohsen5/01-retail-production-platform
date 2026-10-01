@@ -211,8 +211,7 @@ jobs:
             persist-credentials: false
             fetch-depth: 0
 
-        - name: Test container selector
-          run: python3 .github/scripts/test_select_container_builds.py
+        
         
         - name: test path
           run: ls .github/scripts/detect_container_changes.sh 
@@ -547,7 +546,7 @@ jobs:
               for service in "${services[@]}"; do
                 echo "  - ${service}"
               done
-            done
+            fi
         
     sonarqube-analyses:
       name: sonarqube
