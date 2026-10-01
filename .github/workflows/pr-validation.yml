@@ -325,8 +325,6 @@ jobs:
             path: reports/trivy-image-${{ matrix.service }}.json
             if-no-files-found: error
             retention-days: 14
-            
-
     publish-container:
       name: Publish container — ${{ matrix.service }}
       needs: 
@@ -462,7 +460,11 @@ jobs:
             IMAGE_TAG: ${{ steps.meta.outputs.image_tag }}
           run: |
             digest="$(
-                aws ecr batch-get-image 	              --repository-name "${REPOSITORY}" 	              --image-ids "imageTag=${IMAGE_TAG}" 	              --query 'images[0].imageId.imageDigest' 	              --output text
+                aws ecr batch-get-image \
+                --repository-name "${REPO}" \
+                --image-ids "imageTag=${IMAGE_TAG}" \
+                --query 'images[0].imageId.imageDigest' \
+                --output text
               )"
             test -n "$digest" && test "$digest" != "None"
             echo "digest=${digest}" >> "${GITHUB_OUTPUT}"
