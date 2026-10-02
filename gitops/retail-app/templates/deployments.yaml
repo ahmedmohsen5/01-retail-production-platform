@@ -1,0 +1,49 @@
+{{- range $serviceName, $service := .Values.services }}
+{{- if $service.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $serviceName | quote }}
+  namespace: {{ $.Release.Namespace | quote }}
+  labels:
+    {{- include "retail.labels" (dict "serviceName" $serviceName "root" $) | nindent 4 }}
+spec:
+  replicas: {{ $service.replicas }}
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ $serviceName | quote }}
+  template:
+    metadata:
+      labels:
+        {{- include "retail.labels" (dict "serviceName" $serviceName "root" $) | nindent 8 }}
+    spec:
+      serviceAccountName: {{ $serviceName | quote }}
+      securityContext:
+        {{- toYaml $.Values.podSecurityContext  | nindent 8 }}
+      containers:
+        - name: {{ $serviceName | quote }}
+          image: {{ printf "%s/%s:%s" (required "imageRegistry is required" $.Values.imageRegistry) $service.image.repository $service.image.tag | quote }}
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            {{- toYaml $.Values.containerSecurityContext | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: 8080
+          {{- if $service.config }}
+          envFrom:
+            - configMapRef:
+                name: {{ printf "%s-config" $serviceName | quote }}
+          {{- end }}
+          resources:
+            {{- toYaml $service.resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+{{- end }}
+{{- end }}

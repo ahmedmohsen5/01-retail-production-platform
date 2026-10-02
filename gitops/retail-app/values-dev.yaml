@@ -1,0 +1,98 @@
+imageRegistry: "147723036683.dkr.ecr.us-east-1.amazonaws.com"
+
+services:
+  ui:
+    enabled: true
+    replicas: 1
+    image:
+      repository: retail-ui
+      tag: "a6285f6d3a33ea41cb0de01edbbe2bcee6efcfd1-36147074794-1"
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "256Mi"
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
+    config:
+      RETAIL_UI_ENDPOINTS_CATALOG: "http://catalog:8080"
+      RETAIL_UI_ENDPOINTS_CARTS: "http://cart:8080"
+      RETAIL_UI_ENDPOINTS_ORDERS: "http://orders:8080"
+      RETAIL_UI_ENDPOINTS_CHECKOUT: "http://checkout:8080"
+
+  catalog:
+    enabled: true
+    replicas: 1
+    image:
+      repository: retail-catalog
+      tag: "a6285f6d3a33ea41cb0de01edbbe2bcee6efcfd1-36147074794-1"
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "256Mi"
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
+
+  cart:
+    enabled: true
+    replicas: 1
+    image:
+      repository: retail-cart
+      tag: "a6285f6d3a33ea41cb0de01edbbe2bcee6efcfd1-36147074794-1"
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "256Mi"
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
+
+  orders:
+    enabled: true
+    replicas: 1
+    image:
+      repository: retail-orders
+      tag: "a6285f6d3a33ea41cb0de01edbbe2bcee6efcfd1-36147074794-1"
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "256Mi"
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
+
+  checkout:
+    enabled: true
+    replicas: 1
+    image:
+      repository: retail-checkout
+      tag: "a6285f6d3a33ea41cb0de01edbbe2bcee6efcfd1-36147074794-1"
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "256Mi"
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
+    config:
+      RETAIL_CHECKOUT_ENDPOINTS_ORDERS: "http://orders:8080"
+
+ingress:
+  enabled: true
+  securityGroup: retail-platform-alb-sg
+  tags: environment=dev,project=retail-platform
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001
+  seccompProfile:
+    type: RuntimeDefault
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ["ALL"]

@@ -1,0 +1,18 @@
+{{- range $serviceName, $service := .Values.services }}
+{{- if and $service.enabled $service.config }}
+{{- if gt (len $service.config) 0 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-config" $serviceName | quote }}
+  namespace: {{ $.Release.Namespace | quote }}
+  labels:
+    {{- include "retail.labels" (dict "serviceName" $serviceName "root" $) | nindent 4 }}
+data:
+{{- range $key, $value := $service.config }}
+  {{ $key }}: {{ $value | toString | quote }}
+  {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
