@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: retail
+  namespace: argocd
+
+spec:
+  project: retail
+  source:
+    repoURL: https://github.com/ahmedmohsen5/01-retail-production-platform.git
+    path: gitops/retail-app
+    helm:
+      releaseName: retail-dev
+      valueFiles:
+        - values-dev.yaml
+    targetRevision: main
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: retail
