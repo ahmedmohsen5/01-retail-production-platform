@@ -34,7 +34,7 @@ spec:
           emptyDir: {}
       containers:
       - name: orders
-        image: 147723036683.dkr.ecr.us-east-1.amazonaws.com/retail-orders:124237091b9de5a5deb16836e77b57d72f449e18-37051182965-1
+        image: 147723036683.dkr.ecr.us-east-1.amazonaws.com/retail-orders:76bb6ec5233dd615e4468d53e4965686d0800272-37127173102-1
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false

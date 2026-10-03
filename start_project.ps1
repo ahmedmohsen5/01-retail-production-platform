@@ -127,3 +127,16 @@ try {
     Write-Host "Project started successfully. Published image tag: $tag"
 }
 finally { Pop-Location }
+
+
+#kubectl apply -f k8s/platform/aws-load-balancer-controller/serviceaccount.yaml
+#
+#helm repo add eks https://aws.github.io/eks-charts
+#helm repo update eks
+#
+#helm upgrade --install aws-load-balancer-controller eks/aws-load-balancer-controller `
+#  --namespace kube-system `
+#  --version 3.5.0 `
+#  -f k8s/platform/aws-load-balancer-controller/values-dev.yaml `
+#  --wait `
+#  --timeout 5m
