@@ -158,6 +158,21 @@ jobs:
                       -kubernetes-version 1.36.0 \
                       -skip 'IngressClassParams' \
                       /tmp/aws-load-balancer-controller.yaml
+            - name: validate helm chart
+              shell: bash
+              run: |
+                    helm lint gitops/retail-app \
+                      --namespace retail \
+                      -f gitops/retail-app/values-dev.yaml
+
+                    helm template retail-app gitops/retail-app \
+                      --namespace retail \
+                      -f gitops/retail-app/values-dev.yaml \
+                      > /tmp/retail-app.yaml
+
+                    kubeconform -strict -summary \
+                      -kubernetes-version 1.36.0 \
+                      /tmp/retail-app.yaml
 
 
     gate:
@@ -457,6 +472,23 @@ jobs:
               --severity HIGH,CRITICAL \
               --exit-code 1 \
               k8s
+        - name: setup helm
+          uses: Azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310
+        - name: render retail chart
+          shell: bash
+          run: |
+            helm template retail-app gitops/retail-app \
+              --namespace retail \
+              -f gitops/retail-app/values-dev.yaml \
+              > /tmp/retail-app.yaml
+
+        - name: scan rendered retail chart
+          shell: bash
+          run: |
+            trivy config \
+              --severity HIGH,CRITICAL \
+              --exit-code 1 \
+              /tmp/retail-app.yaml
 
         - name: upload iac and kubernetes reports
           if: always()

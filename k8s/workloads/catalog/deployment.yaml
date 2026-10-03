@@ -34,7 +34,7 @@ spec:
           emptyDir: {}
       containers:
       - name: catalog
-        image: 147723036683.dkr.ecr.us-east-1.amazonaws.com/retail-catalog:a6285f6d3a33ea41cb0de01edbbe2bcee6efcfd1-36147074794-1
+        image: 147723036683.dkr.ecr.us-east-1.amazonaws.com/retail-catalog:124237091b9de5a5deb16836e77b57d72f449e18-37051182965-1
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false

@@ -60,6 +60,13 @@ balancer controller is still running, deletes the retail namespace, and removes
 the infrastructure. It also works after a partial destroy. Failures stop the
 script; fix the reported issue and rerun it.
 
+If a direct Terraform destroy fails with ECR `RepositoryNotEmptyException`, run
+`./destroy_project.ps1` to finish the partial teardown. It force-deletes only ECR
+repositories in the refreshed destroy plan, then regenerates the plan. The dev
+repositories also set `force_delete = true` for future direct Terraform destroys;
+that setting must first be applied to state. Editing the configuration alone
+does not update an existing destroy plan.
+
 Use the same AWS credentials and backend as startup. AWS CLI and Terraform are
 required; kubectl and working EKS API access are required if the cluster still
 exists. Stop any running startup or image publishing workflow before teardown.

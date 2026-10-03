@@ -24,6 +24,34 @@ function Write-Utf8 {
     param([string]$Path, [string]$Content)
     [IO.File]::WriteAllText($Path, $Content, (New-Object Text.UTF8Encoding($false)))
 }
+function Update-HelmImages {
+    param([string]$Yaml, [hashtable]$ImageUris, [string]$Tag)
+    $registries = @($ImageUris.Values | ForEach-Object { ($_ -split '/', 2)[0] } | Select-Object -Unique)
+    if ($registries.Count -ne 1) { throw 'Helm values require one shared image registry.' }
+    $registryPattern = '(?m)^imageRegistry:[^\r\n]*'
+    if ([regex]::Matches($Yaml, $registryPattern).Count -ne 1) { throw 'Expected one imageRegistry in Helm dev values.' }
+    $Yaml = [regex]::Replace($Yaml, $registryPattern, ('imageRegistry: "' + $registries[0] + '"'))
+    # Match the existing two-space service / four-space image structure, preserving other values.
+    foreach ($service in $ImageUris.Keys) {
+        $pattern = '(?ms)(^  ' + [regex]::Escape($service) + ':\r?\n)(.*?)(?=^\S|^  \S|\z)'
+        $matches = [regex]::Matches($Yaml, $pattern)
+        if ($matches.Count -ne 1) { throw "Expected one Helm service block for $service." }
+        $block = $matches[0].Value
+        $imagePattern = '(?ms)^    image:\r?\n.*?(?=^    \S|\z)'
+        $images = [regex]::Matches($block, $imagePattern)
+        if ($images.Count -ne 1) { throw "Expected one Helm image block for $service." }
+        $image = $images[0].Value
+        foreach ($field in @('repository', 'tag')) {
+            $fieldPattern = '(?m)^      ' + $field + ':[^\r\n]*'
+            if ([regex]::Matches($image, $fieldPattern).Count -ne 1) { throw "Expected one Helm image.$field for $service." }
+            $value = if ($field -eq 'tag') { $Tag } else { ($ImageUris[$service] -split '/', 2)[1] }
+            $image = [regex]::Replace($image, $fieldPattern, ('      ' + $field + ': "' + $value + '"'))
+        }
+        $newBlock = $block.Replace($images[0].Value, $image)
+        $Yaml = $Yaml.Substring(0, $matches[0].Index) + $newBlock + $Yaml.Substring($matches[0].Index + $matches[0].Length)
+    }
+    return $Yaml
+}
 Push-Location $PSScriptRoot
 try {
     foreach ($tool in @('aws','terraform','gh','kubectl')) {
@@ -70,9 +98,11 @@ try {
     $tag = "$($run.headSha)-$($run.databaseId)-$($run.attempt)"
     $services = @('catalog','cart','orders','checkout','ui')
     $updates = @{}
+    $imageUris = @{}
     foreach ($service in $services) {
         $repoName = "retail-$service"
         $uri = $outputs.ecr_repository_urls.value.PSObject.Properties[$repoName].Value
+        $imageUris[$service] = $uri
         # Verify all exact image tags before changing any manifests.
         Invoke-Tool aws @('ecr','describe-images','--region',$region,'--repository-name',$repoName,'--image-ids',"imageTag=$tag",'--query','imageDetails[0].imageDigest','--output','text')
         $path = Join-Path $PSScriptRoot "k8s/workloads/$service/deployment.yaml"
@@ -81,7 +111,10 @@ try {
         if ([regex]::Matches($yaml,$pattern).Count -ne 1) { throw "Expected exactly one container image in $path." }
         $updates[$path] = [regex]::Replace($yaml,$pattern,"`${1}${uri}:$tag")
     }
+    $helmValuesPath = Join-Path $PSScriptRoot 'gitops/retail-app/values-dev.yaml'
+    $updates[$helmValuesPath] = Update-HelmImages ([IO.File]::ReadAllText($helmValuesPath)) $imageUris $tag
     foreach ($entry in $updates.GetEnumerator()) { Write-Utf8 $entry.Key $entry.Value }
+    Write-Host "Updated Kubernetes manifests and Helm dev values to published image tag: $tag"
     $context = "retail-startup-$($identity.Account)-$cluster"
     Invoke-Tool aws @('eks','update-kubeconfig','--region',$region,'--name',$cluster,'--alias',$context)
     Invoke-Tool kubectl @('--context',$context,'apply','-f','k8s/base/namespace.yml')

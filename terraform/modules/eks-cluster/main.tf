@@ -11,9 +11,7 @@ resource "aws_kms_key" "eks_secrets" {
   tags                    = var.tags
 }
 
-# Dev operators access the API from outside the VPC. The caller supplies
-# validated IPv4 allowlists; private endpoint access remains enabled.
-#trivy:ignore:AWS-0040
+
 resource "aws_eks_cluster" "this" {
   name                      = var.cluster_name
   role_arn                  = var.cluster_role_arn
