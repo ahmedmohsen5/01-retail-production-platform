@@ -17,3 +17,9 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: retail
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+      enabled: true
