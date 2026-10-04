@@ -129,7 +129,7 @@ try {
 finally { Pop-Location }
 
 
-
+kubectl create namespace retail
 aws eks update-kubeconfig --region us-east-1 --name retail-platform-dev
 kubectl apply -f k8s/platform/aws-load-balancer-controller/serviceaccount.yaml
 helm repo add eks https://aws.github.io/eks-charts
@@ -148,5 +148,3 @@ helm upgrade --install argocd argo/argo-cd `
   -f gitops/platform/argocd/values.yaml `
   --wait `
   --timeout 10m
-
-kubectl create namespace retail
