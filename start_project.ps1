@@ -129,14 +129,24 @@ try {
 finally { Pop-Location }
 
 
-#kubectl apply -f k8s/platform/aws-load-balancer-controller/serviceaccount.yaml
-#
-#helm repo add eks https://aws.github.io/eks-charts
-#helm repo update eks
-#
-#helm upgrade --install aws-load-balancer-controller eks/aws-load-balancer-controller `
-#  --namespace kube-system `
-#  --version 3.5.0 `
-#  -f k8s/platform/aws-load-balancer-controller/values-dev.yaml `
-#  --wait `
-#  --timeout 5m
+
+aws eks update-kubeconfig --region us-east-1 --name retail-platform-dev
+kubectl apply -f k8s/platform/aws-load-balancer-controller/serviceaccount.yaml
+helm repo add eks https://aws.github.io/eks-charts
+helm repo update eks
+helm upgrade --install aws-load-balancer-controller eks/aws-load-balancer-controller `
+  --namespace kube-system `
+  --version 3.5.0 `
+  -f k8s/platform/aws-load-balancer-controller/values-dev.yaml `
+  --wait `
+  --timeout 5m
+
+helm upgrade --install argocd argo/argo-cd `
+  --version 10.9.6 `
+  --namespace argocd `
+  --create-namespace `
+  -f gitops/platform/argocd/values.yaml `
+  --wait `
+  --timeout 10m
+
+kubectl create namespace retail

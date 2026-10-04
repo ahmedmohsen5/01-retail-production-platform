@@ -6,7 +6,7 @@ services:
     replicas: 1
     image:
       repository: "retail-ui"
-      tag: "76bb6ec5233dd615e4468d53e4965686d0800272-37127173102-1"
+      tag: "40e6763dcecf5b37bc5c9c865b199140be4379ec-37195854722-1"
     resources:
       requests:
         cpu: "250m"
@@ -25,7 +25,7 @@ services:
     replicas: 2
     image:
       repository: "retail-catalog"
-      tag: "76bb6ec5233dd615e4468d53e4965686d0800272-37127173102-1"
+      tag: "40e6763dcecf5b37bc5c9c865b199140be4379ec-37195854722-1"
     resources:
       requests:
         cpu: "250m"
@@ -39,7 +39,7 @@ services:
     replicas: 1
     image:
       repository: "retail-cart"
-      tag: "76bb6ec5233dd615e4468d53e4965686d0800272-37127173102-1"
+      tag: "40e6763dcecf5b37bc5c9c865b199140be4379ec-37195854722-1"
     resources:
       requests:
         cpu: "250m"
@@ -53,7 +53,7 @@ services:
     replicas: 1
     image:
       repository: "retail-orders"
-      tag: "76bb6ec5233dd615e4468d53e4965686d0800272-37127173102-1"
+      tag: "40e6763dcecf5b37bc5c9c865b199140be4379ec-37195854722-1"
     resources:
       requests:
         cpu: "250m"
@@ -67,7 +67,7 @@ services:
     replicas: 1
     image:
       repository: "retail-checkout"
-      tag: "76bb6ec5233dd615e4468d53e4965686d0800272-37127173102-1"
+      tag: "40e6763dcecf5b37bc5c9c865b199140be4379ec-37195854722-1"
     resources:
       requests:
         cpu: "250m"
