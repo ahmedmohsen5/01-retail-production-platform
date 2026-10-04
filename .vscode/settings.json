@@ -1,6 +1,18 @@
 {
   "yaml.schemas": {
-    "kubernetes": ["k8s/**/*.yml", "k8s/**/*.yaml"]
+    "kubernetes": [
+      "k8s/**/*.yml",
+      "k8s/**/*.yaml"
+    ],
+    "./.vscode/schemas/argocd-values.schema.json": [
+      "gitops/platform/argocd/values.yaml"
+    ],
+    "https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/argoproj.io/application_v1alpha1.json": [
+      "gitops/argocd/retail-dev-application.yaml"
+    ],
+    "https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/argoproj.io/appproject_v1alpha1.json": [
+      "gitops/argocd/retail-project.yaml"
+    ]
   },
   "yaml.completion": true,
   "yaml.validate": true,

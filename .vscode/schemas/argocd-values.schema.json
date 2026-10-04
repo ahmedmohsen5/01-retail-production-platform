@@ -1,0 +1,5602 @@
+{
+  "type": "object",
+  "properties": {
+    "nameOverride": {
+      "default": "argocd"
+    },
+    "fullnameOverride": {
+      "default": ""
+    },
+    "namespaceOverride": {
+      "default": ""
+    },
+    "kubeVersionOverride": {
+      "default": ""
+    },
+    "apiVersionOverrides": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true
+    },
+    "createAggregateRoles": {
+      "default": false
+    },
+    "createClusterRoles": {
+      "default": true
+    },
+    "openshift": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "default": false
+        }
+      },
+      "additionalProperties": true
+    },
+    "crds": {
+      "type": "object",
+      "properties": {
+        "install": {
+          "default": true
+        },
+        "keep": {
+          "default": true
+        },
+        "annotations": {
+          "type": "object",
+          "properties": {
+            "argocd.argoproj.io/sync-options": {
+              "default": "ServerSideApply=true"
+            }
+          },
+          "additionalProperties": true
+        },
+        "additionalLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "global": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "default": "argocd.example.com"
+        },
+        "runtimeClassName": {
+          "default": ""
+        },
+        "additionalLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "revisionHistoryLimit": {
+          "default": 3
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "default": "quay.io/argoproj/argocd"
+            },
+            "tag": {
+              "default": ""
+            },
+            "imagePullPolicy": {
+              "default": "IfNotPresent"
+            }
+          },
+          "additionalProperties": true
+        },
+        "imagePullSecrets": {
+          "type": "array"
+        },
+        "logging": {
+          "type": "object",
+          "properties": {
+            "format": {
+              "default": "text"
+            },
+            "level": {
+              "default": "info"
+            }
+          },
+          "additionalProperties": true
+        },
+        "statefulsetAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "statefulsetLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "deploymentAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "deploymentLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "podAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "podLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "addPrometheusAnnotations": {
+          "default": false
+        },
+        "securityContext": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "hostAliases": {
+          "type": "array"
+        },
+        "dualStack": {
+          "type": "object",
+          "properties": {
+            "ipFamilyPolicy": {
+              "default": ""
+            },
+            "ipFamilies": {
+              "type": "array"
+            }
+          },
+          "additionalProperties": true
+        },
+        "networkPolicy": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": true
+            },
+            "defaultDenyIngress": {
+              "default": false
+            }
+          },
+          "additionalProperties": true
+        },
+        "priorityClassName": {
+          "default": ""
+        },
+        "nodeSelector": {
+          "type": "object",
+          "properties": {
+            "kubernetes.io/os": {
+              "default": "linux"
+            }
+          },
+          "additionalProperties": true
+        },
+        "tolerations": {
+          "type": "array"
+        },
+        "affinity": {
+          "type": "object",
+          "properties": {
+            "podAntiAffinity": {
+              "default": "soft"
+            },
+            "nodeAffinity": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "default": "hard"
+                },
+                "matchExpressions": {
+                  "type": "array"
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "topologySpreadConstraints": {
+          "type": "array"
+        },
+        "deploymentStrategy": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "env": {
+          "type": "array"
+        },
+        "extraVolumes": {
+          "type": "array"
+        },
+        "extraVolumeMounts": {
+          "type": "array"
+        },
+        "certificateAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "configs": {
+      "type": "object",
+      "properties": {
+        "cm": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "application.instanceLabelKey": {
+              "default": "argocd.argoproj.io/instance"
+            },
+            "application.sync.impersonation.enabled": {
+              "default": false
+            },
+            "exec.enabled": {
+              "default": false
+            },
+            "admin.enabled": {
+              "default": true
+            },
+            "timeout.reconciliation": {
+              "default": "120s"
+            },
+            "timeout.reconciliation.jitter": {
+              "default": "60s"
+            },
+            "timeout.hard.reconciliation": {
+              "default": "0s"
+            },
+            "statusbadge.enabled": {
+              "default": false
+            },
+            "resource.customizations.ignoreResourceUpdates.all": {
+              "default": "jsonPointers:\n  - /status\n"
+            },
+            "resource.customizations.ignoreResourceUpdates.argoproj.io_Application": {
+              "default": "jqPathExpressions:\n  - '.metadata.annotations.\"notified.notifications.argoproj.io\"'\n  - '.metadata.annotations.\"argocd.argoproj.io/refresh\"'\n  - '.metadata.annotations.\"argocd.argoproj.io/hydrate\"'\n  - '.operation'\n"
+            },
+            "resource.customizations.ignoreResourceUpdates.argoproj.io_Rollout": {
+              "default": "jqPathExpressions:\n  - '.metadata.annotations.\"notified.notifications.argoproj.io\"'\n"
+            },
+            "resource.customizations.ignoreResourceUpdates.autoscaling_HorizontalPodAutoscaler": {
+              "default": "jqPathExpressions:\n  - '.metadata.annotations.\"autoscaling.alpha.kubernetes.io/behavior\"'\n  - '.metadata.annotations.\"autoscaling.alpha.kubernetes.io/conditions\"'\n  - '.metadata.annotations.\"autoscaling.alpha.kubernetes.io/metrics\"'\n  - '.metadata.annotations.\"autoscaling.alpha.kubernetes.io/current-metrics\"'\n"
+            },
+            "resource.customizations.ignoreResourceUpdates.ConfigMap": {
+              "default": "jqPathExpressions:\n  # Ignore the cluster-autoscaler status\n  - '.metadata.annotations.\"cluster-autoscaler.kubernetes.io/last-updated\"'\n  # Ignore the annotation of the legacy Leases election\n  - '.metadata.annotations.\"control-plane.alpha.kubernetes.io/leader\"'\n"
+            },
+            "resource.customizations.ignoreResourceUpdates.apps_ReplicaSet": {
+              "default": "jqPathExpressions:\n  - '.metadata.annotations.\"deployment.kubernetes.io/desired-replicas\"'\n  - '.metadata.annotations.\"deployment.kubernetes.io/max-replicas\"'\n  - '.metadata.annotations.\"rollout.argoproj.io/desired-replicas\"'\n"
+            },
+            "resource.customizations.ignoreResourceUpdates.discovery.k8s.io_EndpointSlice": {
+              "default": "jsonPointers:\n  - /metadata\n  - /endpoints\n  - /ports\n"
+            },
+            "resource.customizations.ignoreResourceUpdates.Endpoints": {
+              "default": "jsonPointers:\n  - /metadata\n  - /subsets\n"
+            },
+            "resource.exclusions": {
+              "default": "### Network resources created by the Kubernetes control plane and excluded to reduce the number of watched events and UI clutter\n- apiGroups:\n  - ''\n  - discovery.k8s.io\n  kinds:\n  - Endpoints\n  - EndpointSlice\n### Internal Kubernetes resources excluded reduce the number of watched events\n- apiGroups:\n  - coordination.k8s.io\n  kinds:\n  - Lease\n### Internal Kubernetes Authz/Authn resources excluded reduce the number of watched events\n- apiGroups:\n  - authentication.k8s.io\n  - authorization.k8s.io\n  kinds:\n  - SelfSubjectReview\n  - TokenReview\n  - LocalSubjectAccessReview\n  - SelfSubjectAccessReview\n  - SelfSubjectRulesReview\n  - SubjectAccessReview\n### Intermediate Certificate Request excluded reduce the number of watched events\n- apiGroups:\n  - certificates.k8s.io\n  kinds:\n  - CertificateSigningRequest\n- apiGroups:\n  - cert-manager.io\n  kinds:\n  - CertificateRequest\n### Cilium internal resources excluded reduce the number of watched events and UI Clutter\n- apiGroups:\n  - cilium.io\n  kinds:\n  - CiliumIdentity\n  - CiliumEndpoint\n  - CiliumEndpointSlice\n### Kyverno intermediate and reporting resources excluded reduce the number of watched events and improve performance\n- apiGroups:\n  - kyverno.io\n  - reports.kyverno.io\n  - wgpolicyk8s.io\n  kinds:\n  - PolicyReport\n  - ClusterPolicyReport\n  - EphemeralReport\n  - ClusterEphemeralReport\n  - AdmissionReport\n  - ClusterAdmissionReport\n  - BackgroundScanReport\n  - ClusterBackgroundScanReport\n  - UpdateRequest\n"
+            },
+            "resourceExclusionsAdditional": {
+              "type": "array"
+            }
+          },
+          "additionalProperties": true
+        },
+        "params": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "rbac": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "policy.default": {
+              "default": ""
+            },
+            "policy.csv": {
+              "default": ""
+            },
+            "scopes": {
+              "default": "[groups]"
+            },
+            "policy.matchMode": {
+              "default": "glob"
+            }
+          },
+          "additionalProperties": true
+        },
+        "gpg": {
+          "type": "object",
+          "properties": {
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "keys": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "ssh": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "knownHosts": {
+              "default": "[ssh.github.com]:443 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=\n[ssh.github.com]:443 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl\n[ssh.github.com]:443 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCj7ndNxQowgcQnjshcLrqPEiiphnt+VTTvDP6mHBL9j1aNUkY4Ue1gvwnGLVlOhGeYrnZaMgRK6+PKCUXaDbC7qtbW8gIkhL7aGCsOr/C56SJMy/BCZfxd1nWzAOxSDPgVsmerOBYfNqltV9/hWCqBywINIR+5dIg6JTJ72pcEpEjcYgXkE2YEFXV1JHnsKgbLWNlhScqb2UmyRkQyytRLtL+38TGxkxCflmO+5Z8CSSNY7GidjMIZ7Q4zMjA2n1nGrlTDkzwDCsw+wqFPGQA179cnfGWOWRVruj16z6XyvxvjJwbz0wQZ75XK5tKSb7FNyeIEs4TT4jk+S4dhPeAUC5y+bDYirYgM4GC7uEnztnZyaVWQ7B381AK4Qdrwt51ZqExKbQpTUNn+EjqoTwvqNj4kqx5QUCI0ThS/YkOxJCXmPUWZbhjpCg56i+2aB6CmK2JGhn57K5mj0MNdBXA4/WnwH6XoPWJzK5Nyu2zB3nAZp+S5hpQs+p1vN1/wsjk=\nbitbucket.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBPIQmuzMBuKdWeF4+a2sjSSpBK0iqitSQ+5BM9KhpexuGt20JpTVM7u5BDZngncgrqDMbWdxMWWOGtZ9UgbqgZE=\nbitbucket.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIazEu89wgQZ4bqs3d63QSMzYVa0MuJ2e2gKTKqu+UUO\nbitbucket.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDQeJzhupRu0u0cdegZIa8e86EG2qOCsIsD1Xw0xSeiPDlCr7kq97NLmMbpKTX6Esc30NuoqEEHCuc7yWtwp8dI76EEEB1VqY9QJq6vk+aySyboD5QF61I/1WeTwu+deCbgKMGbUijeXhtfbxSxm6JwGrXrhBdofTsbKRUsrN1WoNgUa8uqN1Vx6WAJw1JHPhglEGGHea6QICwJOAr/6mrui/oB7pkaWKHj3z7d1IC4KWLtY47elvjbaTlkN04Kc/5LFEirorGYVbt15kAUlqGM65pk6ZBxtaO3+30LVlORZkxOh+LKL/BvbZ/iRNhItLqNyieoQj/uh/7Iv4uyH/cV/0b4WDSd3DptigWq84lJubb9t/DnZlrJazxyDCulTmKdOR7vs9gMTo+uoIrPSb8ScTtvw65+odKAlBj59dhnVp9zd7QUojOpXlL62Aw56U4oO+FALuevvMjiWeavKhJqlR7i5n9srYcrNV7ttmDw7kf/97P5zauIhxcjX+xHv4M=\ngithub.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=\ngithub.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl\ngithub.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCj7ndNxQowgcQnjshcLrqPEiiphnt+VTTvDP6mHBL9j1aNUkY4Ue1gvwnGLVlOhGeYrnZaMgRK6+PKCUXaDbC7qtbW8gIkhL7aGCsOr/C56SJMy/BCZfxd1nWzAOxSDPgVsmerOBYfNqltV9/hWCqBywINIR+5dIg6JTJ72pcEpEjcYgXkE2YEFXV1JHnsKgbLWNlhScqb2UmyRkQyytRLtL+38TGxkxCflmO+5Z8CSSNY7GidjMIZ7Q4zMjA2n1nGrlTDkzwDCsw+wqFPGQA179cnfGWOWRVruj16z6XyvxvjJwbz0wQZ75XK5tKSb7FNyeIEs4TT4jk+S4dhPeAUC5y+bDYirYgM4GC7uEnztnZyaVWQ7B381AK4Qdrwt51ZqExKbQpTUNn+EjqoTwvqNj4kqx5QUCI0ThS/YkOxJCXmPUWZbhjpCg56i+2aB6CmK2JGhn57K5mj0MNdBXA4/WnwH6XoPWJzK5Nyu2zB3nAZp+S5hpQs+p1vN1/wsjk=\ngitlab.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFSMqzJeV9rUzU4kWitGjeR4PWSa29SPqJ1fVkhtj3Hw9xjLVXVYrU9QlYWrOLXBpQ6KWjbjTDTdDkoohFzgbEY=\ngitlab.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAfuCHKVTjquxvt6CM6tdG4SLp1Btn/nOeHHE5UOzRdf\ngitlab.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCsj2bNKTBSpIYDEGk9KxsGh3mySTRgMtXL583qmBpzeQ+jqCMRgBqB98u3z++J1sKlXHWfM9dyhSevkMwSbhoR8XIq/U0tCNyokEi/ueaBMCvbcTHhO7FcwzY92WK4Yt0aGROY5qX2UKSeOvuP4D6TPqKF1onrSzH9bx9XUf2lEdWT/ia1NEKjunUqu1xOB/StKDHMoX4/OKyIzuS0q/T1zOATthvasJFoPrAjkohTyaDUz2LN5JoH839hViyEG82yB+MjcFV5MU3N1l1QL3cVUCh93xSaua1N85qivl+siMkPGbO5xR/En4iEY6K2XPASUEMaieWVNTRCtJ4S8H+9\nssh.dev.azure.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Hr1oTWqNqOlzGJOfGJ4NakVyIzf1rXYd4d7wo6jBlkLvCA4odBlL0mDUyZ0/QUfTTqeu+tm22gOsv+VrVTMk6vwRU75gY/y9ut5Mb3bR5BV58dKXyq9A9UeB5Cakehn5Zgm6x1mKoVyf+FFn26iYqXJRgzIZZcZ5V6hrE0Qg39kZm4az48o0AUbf6Sp4SLdvnuMa2sVNwHBboS7EJkm57XQPVU3/QpyNLHbWDdzwtrlS+ez30S3AdYhLKEOxAG8weOnyrtLJAUen9mTkol8oII1edf7mWWbWVf0nBmly21+nZcmCTISQBtdcyPaEno7fFQMDD26/s0lfKob4Kw8H\nvs-ssh.visualstudio.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Hr1oTWqNqOlzGJOfGJ4NakVyIzf1rXYd4d7wo6jBlkLvCA4odBlL0mDUyZ0/QUfTTqeu+tm22gOsv+VrVTMk6vwRU75gY/y9ut5Mb3bR5BV58dKXyq9A9UeB5Cakehn5Zgm6x1mKoVyf+FFn26iYqXJRgzIZZcZ5V6hrE0Qg39kZm4az48o0AUbf6Sp4SLdvnuMa2sVNwHBboS7EJkm57XQPVU3/QpyNLHbWDdzwtrlS+ez30S3AdYhLKEOxAG8weOnyrtLJAUen9mTkol8oII1edf7mWWbWVf0nBmly21+nZcmCTISQBtdcyPaEno7fFQMDD26/s0lfKob4Kw8H\n"
+            },
+            "extraHosts": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "tls": {
+          "type": "object",
+          "properties": {
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "certificates": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "create": {
+              "default": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "cmp": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": false
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "plugins": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "clusterCredentials": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "credentialTemplates": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "credentialTemplatesAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "repositories": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "repositoriesAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "secret": {
+          "type": "object",
+          "properties": {
+            "createSecret": {
+              "default": true
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "githubSecret": {
+              "default": ""
+            },
+            "gitlabSecret": {
+              "default": ""
+            },
+            "bitbucketServerSecret": {
+              "default": ""
+            },
+            "bitbucketUUID": {
+              "default": ""
+            },
+            "gogsSecret": {
+              "default": ""
+            },
+            "azureDevops": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "default": ""
+                },
+                "password": {
+                  "default": ""
+                }
+              },
+              "additionalProperties": true
+            },
+            "extra": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "argocdServerAdminPassword": {
+              "default": ""
+            },
+            "argocdServerAdminPasswordMtime": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "styles": {
+          "default": ""
+        }
+      },
+      "additionalProperties": true
+    },
+    "extraObjects": {
+      "type": "array"
+    },
+    "controller": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "default": "application-controller"
+        },
+        "replicas": {
+          "default": 1
+        },
+        "dynamicClusterDistribution": {
+          "default": false
+        },
+        "runtimeClassName": {
+          "default": ""
+        },
+        "heartbeatTime": {
+          "default": 10
+        },
+        "revisionHistoryLimit": {
+          "default": 5
+        },
+        "pdb": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "minAvailable": {
+              "default": ""
+            },
+            "maxUnavailable": {
+              "default": ""
+            },
+            "unhealthyPodEvictionPolicy": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "vpa": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "updateMode": {
+              "default": "Initial"
+            },
+            "containerPolicy": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "recommenders": {
+              "type": "array"
+            },
+            "startupBoost": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "default": ""
+            },
+            "tag": {
+              "default": ""
+            },
+            "imagePullPolicy": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "imagePullSecrets": {
+          "type": "array"
+        },
+        "extraArgs": {
+          "type": "array"
+        },
+        "env": {
+          "type": "array"
+        },
+        "envFrom": {
+          "type": "array"
+        },
+        "extraContainers": {
+          "type": "array"
+        },
+        "initContainers": {
+          "type": "array"
+        },
+        "volumeMounts": {
+          "type": "array"
+        },
+        "volumes": {
+          "type": "array"
+        },
+        "emptyDir": {
+          "type": "object",
+          "properties": {
+            "sizeLimit": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "statefulsetAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "statefulsetLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "deploymentAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "deploymentLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "podAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "podLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "resources": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "containerPorts": {
+          "type": "object",
+          "properties": {
+            "metrics": {
+              "default": 8082
+            }
+          },
+          "additionalProperties": true
+        },
+        "hostNetwork": {
+          "default": false
+        },
+        "dnsConfig": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "dnsPolicy": {
+          "default": "ClusterFirst"
+        },
+        "containerSecurityContext": {
+          "type": "object",
+          "properties": {
+            "runAsNonRoot": {
+              "default": true
+            },
+            "readOnlyRootFilesystem": {
+              "default": true
+            },
+            "allowPrivilegeEscalation": {
+              "default": false
+            },
+            "seccompProfile": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "default": "RuntimeDefault"
+                }
+              },
+              "additionalProperties": true
+            },
+            "capabilities": {
+              "type": "object",
+              "properties": {
+                "drop": {
+                  "type": "array",
+                  "items": {
+                    "default": "ALL"
+                  }
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "readinessProbe": {
+          "type": "object",
+          "properties": {
+            "httpPath": {
+              "default": "/healthz"
+            },
+            "failureThreshold": {
+              "default": 3
+            },
+            "initialDelaySeconds": {
+              "default": 10
+            },
+            "periodSeconds": {
+              "default": 10
+            },
+            "successThreshold": {
+              "default": 1
+            },
+            "timeoutSeconds": {
+              "default": 1
+            }
+          },
+          "additionalProperties": true
+        },
+        "livenessProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "httpPath": {
+              "default": "/healthz"
+            },
+            "failureThreshold": {
+              "default": 5
+            },
+            "initialDelaySeconds": {
+              "default": 10
+            },
+            "periodSeconds": {
+              "default": 30
+            },
+            "successThreshold": {
+              "default": 1
+            },
+            "timeoutSeconds": {
+              "default": 5
+            }
+          },
+          "additionalProperties": true
+        },
+        "startupProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "httpPath": {
+              "default": "/healthz"
+            },
+            "failureThreshold": {
+              "default": 20
+            },
+            "initialDelaySeconds": {
+              "default": 10
+            },
+            "periodSeconds": {
+              "default": 10
+            },
+            "successThreshold": {
+              "default": 1
+            },
+            "timeoutSeconds": {
+              "default": 1
+            }
+          },
+          "additionalProperties": true
+        },
+        "terminationGracePeriodSeconds": {
+          "default": 30
+        },
+        "priorityClassName": {
+          "default": ""
+        },
+        "nodeSelector": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "tolerations": {
+          "type": "array"
+        },
+        "affinity": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "topologySpreadConstraints": {
+          "type": "array"
+        },
+        "automountServiceAccountToken": {
+          "default": true
+        },
+        "serviceAccount": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": true
+            },
+            "name": {
+              "default": "argocd-application-controller"
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "automountServiceAccountToken": {
+              "default": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "metrics": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "applicationLabels": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "default": false
+                },
+                "labels": {
+                  "type": "array"
+                }
+              },
+              "additionalProperties": true
+            },
+            "service": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "default": "ClusterIP"
+                },
+                "clusterIP": {
+                  "default": ""
+                },
+                "annotations": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "labels": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "servicePort": {
+                  "default": 8082
+                },
+                "portName": {
+                  "default": "http-metrics"
+                }
+              },
+              "additionalProperties": true
+            },
+            "serviceMonitor": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "default": false
+                },
+                "interval": {
+                  "default": "30s"
+                },
+                "scrapeTimeout": {
+                  "default": ""
+                },
+                "honorLabels": {
+                  "default": false
+                },
+                "relabelings": {
+                  "type": "array"
+                },
+                "metricRelabelings": {
+                  "type": "array"
+                },
+                "selector": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "scheme": {
+                  "default": ""
+                },
+                "tlsConfig": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "namespace": {
+                  "default": ""
+                },
+                "additionalLabels": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "annotations": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                }
+              },
+              "additionalProperties": true
+            },
+            "rules": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "default": false
+                },
+                "namespace": {
+                  "default": ""
+                },
+                "selector": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "additionalLabels": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "annotations": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "spec": {
+                  "type": "array"
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "clusterRoleRules": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "rules": {
+              "type": "array"
+            }
+          },
+          "additionalProperties": true
+        },
+        "roleRules": {
+          "type": "array"
+        },
+        "networkPolicy": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": false
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "dex": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "default": true
+        },
+        "name": {
+          "default": "dex-server"
+        },
+        "extraArgs": {
+          "type": "array"
+        },
+        "runtimeClassName": {
+          "default": ""
+        },
+        "metrics": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "service": {
+              "type": "object",
+              "properties": {
+                "annotations": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "labels": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "portName": {
+                  "default": "http-metrics"
+                }
+              },
+              "additionalProperties": true
+            },
+            "serviceMonitor": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "default": false
+                },
+                "interval": {
+                  "default": "30s"
+                },
+                "honorLabels": {
+                  "default": false
+                },
+                "relabelings": {
+                  "type": "array"
+                },
+                "metricRelabelings": {
+                  "type": "array"
+                },
+                "selector": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "scheme": {
+                  "default": ""
+                },
+                "tlsConfig": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "namespace": {
+                  "default": ""
+                },
+                "additionalLabels": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "annotations": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "pdb": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "minAvailable": {
+              "default": ""
+            },
+            "maxUnavailable": {
+              "default": ""
+            },
+            "unhealthyPodEvictionPolicy": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "vpa": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "updateMode": {
+              "default": "Initial"
+            },
+            "containerPolicy": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "recommenders": {
+              "type": "array"
+            },
+            "startupBoost": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "default": "ghcr.io/dexidp/dex"
+            },
+            "tag": {
+              "default": "v2.45.1"
+            },
+            "imagePullPolicy": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "imagePullSecrets": {
+          "type": "array"
+        },
+        "initImage": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "default": ""
+            },
+            "tag": {
+              "default": ""
+            },
+            "imagePullPolicy": {
+              "default": ""
+            },
+            "resources": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "env": {
+          "type": "array"
+        },
+        "envFrom": {
+          "type": "array"
+        },
+        "extraContainers": {
+          "type": "array"
+        },
+        "initContainers": {
+          "type": "array"
+        },
+        "volumeMounts": {
+          "type": "array"
+        },
+        "volumes": {
+          "type": "array"
+        },
+        "emptyDir": {
+          "type": "object",
+          "properties": {
+            "sizeLimit": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "certificateSecret": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "ca": {
+              "default": ""
+            },
+            "key": {
+              "default": ""
+            },
+            "crt": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "deploymentAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "deploymentLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "podAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "podLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "resources": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "containerPorts": {
+          "type": "object",
+          "properties": {
+            "http": {
+              "default": 5556
+            },
+            "grpc": {
+              "default": 5557
+            },
+            "metrics": {
+              "default": 5558
+            }
+          },
+          "additionalProperties": true
+        },
+        "dnsConfig": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "dnsPolicy": {
+          "default": "ClusterFirst"
+        },
+        "containerSecurityContext": {
+          "type": "object",
+          "properties": {
+            "runAsNonRoot": {
+              "default": true
+            },
+            "runAsUser": {
+              "default": 1001
+            },
+            "readOnlyRootFilesystem": {
+              "default": true
+            },
+            "allowPrivilegeEscalation": {
+              "default": false
+            },
+            "seccompProfile": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "default": "RuntimeDefault"
+                }
+              },
+              "additionalProperties": true
+            },
+            "capabilities": {
+              "type": "object",
+              "properties": {
+                "drop": {
+                  "type": "array",
+                  "items": {
+                    "default": "ALL"
+                  }
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "livenessProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "httpPath": {
+              "default": "/healthz/live"
+            },
+            "httpPort": {
+              "default": "metrics"
+            },
+            "httpScheme": {
+              "default": "HTTP"
+            },
+            "failureThreshold": {
+              "default": 3
+            },
+            "initialDelaySeconds": {
+              "default": 10
+            },
+            "periodSeconds": {
+              "default": 10
+            },
+            "successThreshold": {
+              "default": 1
+            },
+            "timeoutSeconds": {
+              "default": 1
+            }
+          },
+          "additionalProperties": true
+        },
+        "readinessProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "httpPath": {
+              "default": "/healthz/ready"
+            },
+            "httpPort": {
+              "default": "metrics"
+            },
+            "httpScheme": {
+              "default": "HTTP"
+            },
+            "failureThreshold": {
+              "default": 3
+            },
+            "initialDelaySeconds": {
+              "default": 10
+            },
+            "periodSeconds": {
+              "default": 10
+            },
+            "successThreshold": {
+              "default": 1
+            },
+            "timeoutSeconds": {
+              "default": 1
+            }
+          },
+          "additionalProperties": true
+        },
+        "startupProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "httpPath": {
+              "default": "/healthz/ready"
+            },
+            "httpPort": {
+              "default": "metrics"
+            },
+            "httpScheme": {
+              "default": "HTTP"
+            },
+            "failureThreshold": {
+              "default": 20
+            },
+            "initialDelaySeconds": {
+              "default": 10
+            },
+            "periodSeconds": {
+              "default": 10
+            },
+            "successThreshold": {
+              "default": 1
+            },
+            "timeoutSeconds": {
+              "default": 1
+            }
+          },
+          "additionalProperties": true
+        },
+        "terminationGracePeriodSeconds": {
+          "default": 30
+        },
+        "automountServiceAccountToken": {
+          "default": true
+        },
+        "serviceAccount": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": true
+            },
+            "name": {
+              "default": "argocd-dex-server"
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "automountServiceAccountToken": {
+              "default": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "servicePortHttp": {
+          "default": 5556
+        },
+        "servicePortHttpName": {
+          "default": "http"
+        },
+        "servicePortGrpc": {
+          "default": 5557
+        },
+        "servicePortGrpcName": {
+          "default": "grpc"
+        },
+        "servicePortMetrics": {
+          "default": 5558
+        },
+        "priorityClassName": {
+          "default": ""
+        },
+        "nodeSelector": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "tolerations": {
+          "type": "array"
+        },
+        "affinity": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "topologySpreadConstraints": {
+          "type": "array"
+        },
+        "deploymentStrategy": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "networkPolicy": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": false
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "redis": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "default": true
+        },
+        "name": {
+          "default": "redis"
+        },
+        "runtimeClassName": {
+          "default": ""
+        },
+        "existingSecret": {
+          "default": ""
+        },
+        "pdb": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "minAvailable": {
+              "default": ""
+            },
+            "maxUnavailable": {
+              "default": ""
+            },
+            "unhealthyPodEvictionPolicy": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "vpa": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "updateMode": {
+              "default": "Initial"
+            },
+            "containerPolicy": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "recommenders": {
+              "type": "array"
+            },
+            "startupBoost": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "default": "ecr-public.aws.com/docker/library/redis"
+            },
+            "tag": {
+              "default": "8.6.4-alpine"
+            },
+            "imagePullPolicy": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "exporter": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "env": {
+              "type": "array"
+            },
+            "image": {
+              "type": "object",
+              "properties": {
+                "repository": {
+                  "default": "ghcr.io/oliver006/redis_exporter"
+                },
+                "tag": {
+                  "default": "v1.93.0"
+                },
+                "imagePullPolicy": {
+                  "default": ""
+                }
+              },
+              "additionalProperties": true
+            },
+            "containerSecurityContext": {
+              "type": "object",
+              "properties": {
+                "runAsNonRoot": {
+                  "default": true
+                },
+                "readOnlyRootFilesystem": {
+                  "default": true
+                },
+                "allowPrivilegeEscalation": {
+                  "default": false
+                },
+                "seccompProfile": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "default": "RuntimeDefault"
+                    }
+                  },
+                  "additionalProperties": true
+                },
+                "capabilities": {
+                  "type": "object",
+                  "properties": {
+                    "drop": {
+                      "type": "array",
+                      "items": {
+                        "default": "ALL"
+                      }
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              },
+              "additionalProperties": true
+            },
+            "readinessProbe": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "default": false
+                },
+                "initialDelaySeconds": {
+                  "default": 30
+                },
+                "periodSeconds": {
+                  "default": 15
+                },
+                "timeoutSeconds": {
+                  "default": 15
+                },
+                "successThreshold": {
+                  "default": 1
+                },
+                "failureThreshold": {
+                  "default": 5
+                }
+              },
+              "additionalProperties": true
+            },
+            "livenessProbe": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "default": false
+                },
+                "initialDelaySeconds": {
+                  "default": 30
+                },
+                "periodSeconds": {
+                  "default": 15
+                },
+                "timeoutSeconds": {
+                  "default": 15
+                },
+                "successThreshold": {
+                  "default": 1
+                },
+                "failureThreshold": {
+                  "default": 5
+                }
+              },
+              "additionalProperties": true
+            },
+            "resources": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "imagePullSecrets": {
+          "type": "array"
+        },
+        "extraArgs": {
+          "type": "array"
+        },
+        "env": {
+          "type": "array"
+        },
+        "envFrom": {
+          "type": "array"
+        },
+        "readinessProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "initialDelaySeconds": {
+              "default": 30
+            },
+            "periodSeconds": {
+              "default": 15
+            },
+            "timeoutSeconds": {
+              "default": 15
+            },
+            "successThreshold": {
+              "default": 1
+            },
+            "failureThreshold": {
+              "default": 5
+            }
+          },
+          "additionalProperties": true
+        },
+        "livenessProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "initialDelaySeconds": {
+              "default": 30
+            },
+            "periodSeconds": {
+              "default": 15
+            },
+            "timeoutSeconds": {
+              "default": 15
+            },
+            "successThreshold": {
+              "default": 1
+            },
+            "failureThreshold": {
+              "default": 5
+            }
+          },
+          "additionalProperties": true
+        },
+        "extraContainers": {
+          "type": "array"
+        },
+        "initContainers": {
+          "type": "array"
+        },
+        "volumeMounts": {
+          "type": "array"
+        },
+        "volumes": {
+          "type": "array"
+        },
+        "deploymentAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "deploymentLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "podAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "podLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "resources": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "securityContext": {
+          "type": "object",
+          "properties": {
+            "runAsNonRoot": {
+              "default": true
+            },
+            "runAsUser": {
+              "default": 999
+            },
+            "seccompProfile": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "default": "RuntimeDefault"
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "containerPorts": {
+          "type": "object",
+          "properties": {
+            "redis": {
+              "default": 6379
+            },
+            "metrics": {
+              "default": 9121
+            }
+          },
+          "additionalProperties": true
+        },
+        "hostNetwork": {
+          "default": false
+        },
+        "dnsConfig": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "dnsPolicy": {
+          "default": "ClusterFirst"
+        },
+        "containerSecurityContext": {
+          "type": "object",
+          "properties": {
+            "readOnlyRootFilesystem": {
+              "default": true
+            },
+            "allowPrivilegeEscalation": {
+              "default": false
+            },
+            "capabilities": {
+              "type": "object",
+              "properties": {
+                "drop": {
+                  "type": "array",
+                  "items": {
+                    "default": "ALL"
+                  }
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "servicePort": {
+          "default": 6379
+        },
+        "priorityClassName": {
+          "default": ""
+        },
+        "nodeSelector": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "tolerations": {
+          "type": "array"
+        },
+        "affinity": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "topologySpreadConstraints": {
+          "type": "array"
+        },
+        "terminationGracePeriodSeconds": {
+          "default": 30
+        },
+        "automountServiceAccountToken": {
+          "default": true
+        },
+        "serviceAccount": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": false
+            },
+            "name": {
+              "default": ""
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "automountServiceAccountToken": {
+              "default": false
+            }
+          },
+          "additionalProperties": true
+        },
+        "service": {
+          "type": "object",
+          "properties": {
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "metrics": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "service": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "default": "ClusterIP"
+                },
+                "clusterIP": {
+                  "default": "None"
+                },
+                "annotations": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "labels": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "servicePort": {
+                  "default": 9121
+                },
+                "portName": {
+                  "default": "http-metrics"
+                }
+              },
+              "additionalProperties": true
+            },
+            "serviceMonitor": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "default": false
+                },
+                "interval": {
+                  "default": "30s"
+                },
+                "honorLabels": {
+                  "default": false
+                },
+                "relabelings": {
+                  "type": "array"
+                },
+                "metricRelabelings": {
+                  "type": "array"
+                },
+                "selector": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "scheme": {
+                  "default": ""
+                },
+                "tlsConfig": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "namespace": {
+                  "default": ""
+                },
+                "additionalLabels": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "annotations": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "networkPolicy": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": false
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "redis-ha": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "default": false
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "default": "ecr-public.aws.com/docker/library/redis"
+            },
+            "tag": {
+              "default": "8.6.4-alpine"
+            }
+          },
+          "additionalProperties": true
+        },
+        "exporter": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "image": {
+              "default": "ghcr.io/oliver006/redis_exporter"
+            },
+            "tag": {
+              "default": "v1.75.0"
+            }
+          },
+          "additionalProperties": true
+        },
+        "persistentVolume": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            }
+          },
+          "additionalProperties": true
+        },
+        "redis": {
+          "type": "object",
+          "properties": {
+            "masterGroupName": {
+              "default": "argocd"
+            },
+            "config": {
+              "type": "object",
+              "properties": {
+                "save": {
+                  "default": "\"\""
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "sentinel": {
+          "type": "object",
+          "properties": {
+            "lifecycle": {
+              "type": "object",
+              "properties": {
+                "postStart": {
+                  "type": "object",
+                  "properties": {
+                    "exec": {
+                      "type": "object",
+                      "properties": {
+                        "command": {
+                          "type": "array",
+                          "items": {
+                            "default": "/bin/sh"
+                          }
+                        }
+                      },
+                      "additionalProperties": true
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "haproxy": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": true
+            },
+            "labels": {
+              "type": "object",
+              "properties": {
+                "app.kubernetes.io/name": {
+                  "default": "argocd-redis-ha-haproxy"
+                }
+              },
+              "additionalProperties": true
+            },
+            "image": {
+              "type": "object",
+              "properties": {
+                "repository": {
+                  "default": "ecr-public.aws.com/docker/library/haproxy"
+                }
+              },
+              "additionalProperties": true
+            },
+            "metrics": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "default": true
+                }
+              },
+              "additionalProperties": true
+            },
+            "hardAntiAffinity": {
+              "default": true
+            },
+            "additionalAffinities": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "affinity": {
+              "default": ""
+            },
+            "tolerations": {
+              "type": "array"
+            },
+            "containerSecurityContext": {
+              "type": "object",
+              "properties": {
+                "readOnlyRootFilesystem": {
+                  "default": true
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "auth": {
+          "default": true
+        },
+        "existingSecret": {
+          "default": "argocd-redis"
+        },
+        "hardAntiAffinity": {
+          "default": true
+        },
+        "additionalAffinities": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "affinity": {
+          "default": ""
+        },
+        "tolerations": {
+          "type": "array"
+        },
+        "topologySpreadConstraints": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "maxSkew": {
+              "default": ""
+            },
+            "topologyKey": {
+              "default": ""
+            },
+            "whenUnsatisfiable": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "containerSecurityContext": {
+          "type": "object",
+          "properties": {
+            "readOnlyRootFilesystem": {
+              "default": true
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "externalRedis": {
+      "type": "object",
+      "properties": {
+        "host": {
+          "default": ""
+        },
+        "username": {
+          "default": ""
+        },
+        "password": {
+          "default": ""
+        },
+        "port": {
+          "default": 6379
+        },
+        "existingSecret": {
+          "default": ""
+        },
+        "secretAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "redisSecretInit": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "default": true
+        },
+        "name": {
+          "default": "redis-secret-init"
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "default": ""
+            },
+            "tag": {
+              "default": ""
+            },
+            "imagePullPolicy": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "extraArgs": {
+          "type": "array"
+        },
+        "imagePullSecrets": {
+          "type": "array"
+        },
+        "runtimeClassName": {
+          "default": ""
+        },
+        "jobAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "podAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "podLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "resources": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "containerSecurityContext": {
+          "type": "object",
+          "properties": {
+            "allowPrivilegeEscalation": {
+              "default": false
+            },
+            "capabilities": {
+              "type": "object",
+              "properties": {
+                "drop": {
+                  "type": "array",
+                  "items": {
+                    "default": "ALL"
+                  }
+                }
+              },
+              "additionalProperties": true
+            },
+            "readOnlyRootFilesystem": {
+              "default": true
+            },
+            "runAsNonRoot": {
+              "default": true
+            },
+            "seccompProfile": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "default": "RuntimeDefault"
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "securityContext": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "serviceAccount": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": true
+            },
+            "name": {
+              "default": ""
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "automountServiceAccountToken": {
+              "default": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "priorityClassName": {
+          "default": ""
+        },
+        "hostNetwork": {
+          "default": false
+        },
+        "dnsConfig": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "dnsPolicy": {
+          "default": "ClusterFirst"
+        },
+        "affinity": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "nodeSelector": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "tolerations": {
+          "type": "array"
+        }
+      },
+      "additionalProperties": true
+    },
+    "server": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "default": "server"
+        },
+        "replicas": {
+          "default": 1
+        },
+        "runtimeClassName": {
+          "default": ""
+        },
+        "autoscaling": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "minReplicas": {
+              "default": 1
+            },
+            "maxReplicas": {
+              "default": 5
+            },
+            "targetCPUUtilizationPercentage": {
+              "default": 50
+            },
+            "targetMemoryUtilizationPercentage": {
+              "default": 50
+            },
+            "behavior": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "metrics": {
+              "type": "array"
+            }
+          },
+          "additionalProperties": true
+        },
+        "pdb": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "minAvailable": {
+              "default": ""
+            },
+            "maxUnavailable": {
+              "default": ""
+            },
+            "unhealthyPodEvictionPolicy": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "vpa": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "updateMode": {
+              "default": "Initial"
+            },
+            "containerPolicy": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "recommenders": {
+              "type": "array"
+            },
+            "startupBoost": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "default": ""
+            },
+            "tag": {
+              "default": ""
+            },
+            "imagePullPolicy": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "imagePullSecrets": {
+          "type": "array"
+        },
+        "extraArgs": {
+          "type": "array"
+        },
+        "env": {
+          "type": "array"
+        },
+        "envFrom": {
+          "type": "array"
+        },
+        "lifecycle": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "extensions": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "image": {
+              "type": "object",
+              "properties": {
+                "repository": {
+                  "default": "quay.io/argoprojlabs/argocd-extension-installer"
+                },
+                "tag": {
+                  "default": "v1.1.0"
+                },
+                "imagePullPolicy": {
+                  "default": ""
+                }
+              },
+              "additionalProperties": true
+            },
+            "extensionList": {
+              "type": "array"
+            },
+            "containerSecurityContext": {
+              "type": "object",
+              "properties": {
+                "runAsNonRoot": {
+                  "default": true
+                },
+                "readOnlyRootFilesystem": {
+                  "default": true
+                },
+                "allowPrivilegeEscalation": {
+                  "default": false
+                },
+                "runAsUser": {
+                  "default": 1000
+                },
+                "seccompProfile": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "default": "RuntimeDefault"
+                    }
+                  },
+                  "additionalProperties": true
+                },
+                "capabilities": {
+                  "type": "object",
+                  "properties": {
+                    "drop": {
+                      "type": "array",
+                      "items": {
+                        "default": "ALL"
+                      }
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              },
+              "additionalProperties": true
+            },
+            "resources": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "extraContainers": {
+          "type": "array"
+        },
+        "initContainers": {
+          "type": "array"
+        },
+        "volumeMounts": {
+          "type": "array"
+        },
+        "volumes": {
+          "type": "array"
+        },
+        "emptyDir": {
+          "type": "object",
+          "properties": {
+            "sizeLimit": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "deploymentAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "deploymentLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "podAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "podLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "resources": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "containerPorts": {
+          "type": "object",
+          "properties": {
+            "server": {
+              "default": 8080
+            },
+            "metrics": {
+              "default": 8083
+            }
+          },
+          "additionalProperties": true
+        },
+        "hostNetwork": {
+          "default": false
+        },
+        "dnsConfig": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "dnsPolicy": {
+          "default": "ClusterFirst"
+        },
+        "containerSecurityContext": {
+          "type": "object",
+          "properties": {
+            "runAsNonRoot": {
+              "default": true
+            },
+            "readOnlyRootFilesystem": {
+              "default": true
+            },
+            "allowPrivilegeEscalation": {
+              "default": false
+            },
+            "seccompProfile": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "default": "RuntimeDefault"
+                }
+              },
+              "additionalProperties": true
+            },
+            "capabilities": {
+              "type": "object",
+              "properties": {
+                "drop": {
+                  "type": "array",
+                  "items": {
+                    "default": "ALL"
+                  }
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "readinessProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": true
+            },
+            "httpPath": {
+              "default": "/healthz"
+            },
+            "failureThreshold": {
+              "default": 3
+            },
+            "initialDelaySeconds": {
+              "default": 10
+            },
+            "periodSeconds": {
+              "default": 10
+            },
+            "successThreshold": {
+              "default": 1
+            },
+            "timeoutSeconds": {
+              "default": 1
+            }
+          },
+          "additionalProperties": true
+        },
+        "livenessProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": true
+            },
+            "httpPath": {
+              "default": "/healthz?full=true"
+            },
+            "failureThreshold": {
+              "default": 3
+            },
+            "initialDelaySeconds": {
+              "default": 10
+            },
+            "periodSeconds": {
+              "default": 10
+            },
+            "successThreshold": {
+              "default": 1
+            },
+            "timeoutSeconds": {
+              "default": 1
+            }
+          },
+          "additionalProperties": true
+        },
+        "startupProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "httpPath": {
+              "default": "/healthz"
+            },
+            "failureThreshold": {
+              "default": 20
+            },
+            "initialDelaySeconds": {
+              "default": 10
+            },
+            "periodSeconds": {
+              "default": 10
+            },
+            "successThreshold": {
+              "default": 1
+            },
+            "timeoutSeconds": {
+              "default": 1
+            }
+          },
+          "additionalProperties": true
+        },
+        "terminationGracePeriodSeconds": {
+          "default": 30
+        },
+        "priorityClassName": {
+          "default": ""
+        },
+        "nodeSelector": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "tolerations": {
+          "type": "array"
+        },
+        "affinity": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "topologySpreadConstraints": {
+          "type": "array"
+        },
+        "deploymentStrategy": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "certificate": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "domain": {
+              "default": ""
+            },
+            "additionalHosts": {
+              "type": "array"
+            },
+            "duration": {
+              "default": ""
+            },
+            "renewBefore": {
+              "default": ""
+            },
+            "issuer": {
+              "type": "object",
+              "properties": {
+                "group": {
+                  "default": ""
+                },
+                "kind": {
+                  "default": ""
+                },
+                "name": {
+                  "default": ""
+                }
+              },
+              "additionalProperties": true
+            },
+            "privateKey": {
+              "type": "object",
+              "properties": {
+                "rotationPolicy": {
+                  "default": "Never"
+                },
+                "encoding": {
+                  "default": "PKCS1"
+                },
+                "algorithm": {
+                  "default": "RSA"
+                },
+                "size": {
+                  "default": 2048
+                }
+              },
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "usages": {
+              "type": "array"
+            },
+            "secretTemplateAnnotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "certificateSecret": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "key": {
+              "default": ""
+            },
+            "crt": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "service": {
+          "type": "object",
+          "properties": {
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "type": {
+              "default": "ClusterIP"
+            },
+            "nodePortHttp": {
+              "default": 30080
+            },
+            "nodePortHttp2": {},
+            "nodePortHttps": {
+              "default": 30443
+            },
+            "servicePortHttp": {
+              "default": 80
+            },
+            "servicePortHttp2": {},
+            "servicePortHttps": {
+              "default": 443
+            },
+            "servicePortHttpName": {
+              "default": "http"
+            },
+            "servicePortHttp2Name": {
+              "default": "http2"
+            },
+            "servicePortHttpsName": {
+              "default": "https"
+            },
+            "servicePortHttp2AppProtocol": {
+              "default": ""
+            },
+            "servicePortHttpsAppProtocol": {
+              "default": ""
+            },
+            "loadBalancerClass": {
+              "default": ""
+            },
+            "loadBalancerIP": {
+              "default": ""
+            },
+            "loadBalancerSourceRanges": {
+              "type": "array"
+            },
+            "externalIPs": {
+              "type": "array"
+            },
+            "externalTrafficPolicy": {
+              "default": "Cluster"
+            },
+            "sessionAffinity": {
+              "default": "None"
+            }
+          },
+          "additionalProperties": true
+        },
+        "metrics": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "service": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "default": "ClusterIP"
+                },
+                "clusterIP": {
+                  "default": ""
+                },
+                "annotations": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "labels": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "servicePort": {
+                  "default": 8083
+                },
+                "portName": {
+                  "default": "http-metrics"
+                }
+              },
+              "additionalProperties": true
+            },
+            "serviceMonitor": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "default": false
+                },
+                "interval": {
+                  "default": "30s"
+                },
+                "scrapeTimeout": {
+                  "default": ""
+                },
+                "honorLabels": {
+                  "default": false
+                },
+                "relabelings": {
+                  "type": "array"
+                },
+                "metricRelabelings": {
+                  "type": "array"
+                },
+                "selector": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "scheme": {
+                  "default": ""
+                },
+                "tlsConfig": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "namespace": {
+                  "default": ""
+                },
+                "additionalLabels": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "annotations": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "automountServiceAccountToken": {
+          "default": true
+        },
+        "serviceAccount": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": true
+            },
+            "name": {
+              "default": "argocd-server"
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "automountServiceAccountToken": {
+              "default": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "ingress": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "controller": {
+              "default": "generic"
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "ingressClassName": {
+              "default": ""
+            },
+            "hostname": {
+              "default": ""
+            },
+            "path": {
+              "default": "/"
+            },
+            "pathType": {
+              "default": "Prefix"
+            },
+            "tls": {
+              "default": false
+            },
+            "extraHosts": {
+              "type": "array"
+            },
+            "extraPaths": {
+              "type": "array"
+            },
+            "extraRules": {
+              "type": "array"
+            },
+            "extraTls": {
+              "type": "array"
+            },
+            "aws": {
+              "type": "object",
+              "properties": {
+                "backendProtocolVersion": {
+                  "default": "GRPC"
+                },
+                "serviceType": {
+                  "default": "NodePort"
+                },
+                "serviceAnnotations": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                }
+              },
+              "additionalProperties": true
+            },
+            "gke": {
+              "type": "object",
+              "properties": {
+                "backendConfig": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "frontendConfig": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "managedCertificate": {
+                  "type": "object",
+                  "properties": {
+                    "create": {
+                      "default": true
+                    },
+                    "extraDomains": {
+                      "type": "array"
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "ingressGrpc": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "ingressClassName": {
+              "default": ""
+            },
+            "hostname": {
+              "default": ""
+            },
+            "path": {
+              "default": "/"
+            },
+            "pathType": {
+              "default": "Prefix"
+            },
+            "tls": {
+              "default": false
+            },
+            "extraHosts": {
+              "type": "array"
+            },
+            "extraPaths": {
+              "type": "array"
+            },
+            "extraRules": {
+              "type": "array"
+            },
+            "extraTls": {
+              "type": "array"
+            }
+          },
+          "additionalProperties": true
+        },
+        "route": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "hostname": {
+              "default": ""
+            },
+            "termination_type": {
+              "default": "passthrough"
+            },
+            "termination_policy": {
+              "default": "None"
+            }
+          },
+          "additionalProperties": true
+        },
+        "httproute": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "parentRefs": {
+              "type": "array"
+            },
+            "hostnames": {
+              "type": "array"
+            },
+            "rules": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "matches": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "path": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "default": "PathPrefix"
+                            },
+                            "value": {
+                              "default": "/"
+                            }
+                          },
+                          "additionalProperties": true
+                        }
+                      },
+                      "additionalProperties": true
+                    }
+                  }
+                },
+                "additionalProperties": true
+              }
+            }
+          },
+          "additionalProperties": true
+        },
+        "grpcroute": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "parentRefs": {
+              "type": "array"
+            },
+            "hostnames": {
+              "type": "array"
+            },
+            "rules": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "matches": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "method": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "default": "Exact"
+                            }
+                          },
+                          "additionalProperties": true
+                        }
+                      },
+                      "additionalProperties": true
+                    }
+                  }
+                },
+                "additionalProperties": true
+              }
+            }
+          },
+          "additionalProperties": true
+        },
+        "backendTLSPolicy": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "targetRefs": {
+              "type": "array"
+            },
+            "validation": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "listenerset": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "parentRef": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "hostname": {
+              "default": ""
+            },
+            "listenerName": {
+              "default": "https"
+            },
+            "port": {
+              "default": 443
+            },
+            "protocol": {
+              "default": "HTTPS"
+            },
+            "tls": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "default": true
+                },
+                "mode": {
+                  "default": "Terminate"
+                },
+                "secretName": {
+                  "default": ""
+                }
+              },
+              "additionalProperties": true
+            },
+            "allowedRoutes": {
+              "type": "object",
+              "properties": {
+                "namespaces": {
+                  "type": "object",
+                  "properties": {
+                    "from": {
+                      "default": "Same"
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              },
+              "additionalProperties": true
+            },
+            "listeners": {
+              "type": "array"
+            }
+          },
+          "additionalProperties": true
+        },
+        "clusterRoleRules": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "rules": {
+              "type": "array"
+            }
+          },
+          "additionalProperties": true
+        },
+        "networkPolicy": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": false
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "repoServer": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "default": "repo-server"
+        },
+        "replicas": {
+          "default": 1
+        },
+        "runtimeClassName": {
+          "default": ""
+        },
+        "autoscaling": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "minReplicas": {
+              "default": 1
+            },
+            "maxReplicas": {
+              "default": 5
+            },
+            "targetCPUUtilizationPercentage": {
+              "default": 50
+            },
+            "targetMemoryUtilizationPercentage": {
+              "default": 50
+            },
+            "behavior": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "metrics": {
+              "type": "array"
+            }
+          },
+          "additionalProperties": true
+        },
+        "pdb": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "minAvailable": {
+              "default": ""
+            },
+            "maxUnavailable": {
+              "default": ""
+            },
+            "unhealthyPodEvictionPolicy": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "vpa": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "updateMode": {
+              "default": "Initial"
+            },
+            "containerPolicy": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "recommenders": {
+              "type": "array"
+            },
+            "startupBoost": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "default": ""
+            },
+            "tag": {
+              "default": ""
+            },
+            "imagePullPolicy": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "imagePullSecrets": {
+          "type": "array"
+        },
+        "extraArgs": {
+          "type": "array"
+        },
+        "env": {
+          "type": "array"
+        },
+        "envFrom": {
+          "type": "array"
+        },
+        "lifecycle": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "extraContainers": {
+          "type": "array"
+        },
+        "initContainers": {
+          "type": "array"
+        },
+        "copyutil": {
+          "type": "object",
+          "properties": {
+            "extraArgs": {
+              "default": "--update=none"
+            },
+            "resources": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "volumeMounts": {
+          "type": "array"
+        },
+        "volumes": {
+          "type": "array"
+        },
+        "existingVolumes": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "emptyDir": {
+          "type": "object",
+          "properties": {
+            "sizeLimit": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "useEphemeralHelmWorkingDir": {
+          "default": true
+        },
+        "deploymentAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "deploymentLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "podAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "podLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "resources": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "containerPorts": {
+          "type": "object",
+          "properties": {
+            "server": {
+              "default": 8081
+            },
+            "metrics": {
+              "default": 8084
+            }
+          },
+          "additionalProperties": true
+        },
+        "hostNetwork": {
+          "default": false
+        },
+        "dnsConfig": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "dnsPolicy": {
+          "default": "ClusterFirst"
+        },
+        "containerSecurityContext": {
+          "type": "object",
+          "properties": {
+            "runAsNonRoot": {
+              "default": true
+            },
+            "readOnlyRootFilesystem": {
+              "default": true
+            },
+            "allowPrivilegeEscalation": {
+              "default": false
+            },
+            "seccompProfile": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "default": "RuntimeDefault"
+                }
+              },
+              "additionalProperties": true
+            },
+            "capabilities": {
+              "type": "object",
+              "properties": {
+                "drop": {
+                  "type": "array",
+                  "items": {
+                    "default": "ALL"
+                  }
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "readinessProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": true
+            },
+            "httpPath": {
+              "default": "/healthz"
+            },
+            "failureThreshold": {
+              "default": 3
+            },
+            "initialDelaySeconds": {
+              "default": 10
+            },
+            "periodSeconds": {
+              "default": 10
+            },
+            "successThreshold": {
+              "default": 1
+            },
+            "timeoutSeconds": {
+              "default": 1
+            }
+          },
+          "additionalProperties": true
+        },
+        "livenessProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": true
+            },
+            "httpPath": {
+              "default": "/healthz?full=true"
+            },
+            "failureThreshold": {
+              "default": 3
+            },
+            "initialDelaySeconds": {
+              "default": 10
+            },
+            "periodSeconds": {
+              "default": 10
+            },
+            "successThreshold": {
+              "default": 1
+            },
+            "timeoutSeconds": {
+              "default": 1
+            }
+          },
+          "additionalProperties": true
+        },
+        "startupProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "httpPath": {
+              "default": "/healthz"
+            },
+            "failureThreshold": {
+              "default": 20
+            },
+            "initialDelaySeconds": {
+              "default": 10
+            },
+            "periodSeconds": {
+              "default": 10
+            },
+            "successThreshold": {
+              "default": 1
+            },
+            "timeoutSeconds": {
+              "default": 1
+            }
+          },
+          "additionalProperties": true
+        },
+        "terminationGracePeriodSeconds": {
+          "default": 30
+        },
+        "nodeSelector": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "tolerations": {
+          "type": "array"
+        },
+        "affinity": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "topologySpreadConstraints": {
+          "type": "array"
+        },
+        "deploymentStrategy": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "priorityClassName": {
+          "default": ""
+        },
+        "certificateSecret": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "ca": {
+              "default": ""
+            },
+            "key": {
+              "default": ""
+            },
+            "crt": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "service": {
+          "type": "object",
+          "properties": {
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "port": {
+              "default": 8081
+            },
+            "portName": {
+              "default": "tcp-repo-server"
+            },
+            "trafficDistribution": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "metrics": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "service": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "default": "ClusterIP"
+                },
+                "clusterIP": {
+                  "default": ""
+                },
+                "annotations": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "labels": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "servicePort": {
+                  "default": 8084
+                },
+                "portName": {
+                  "default": "http-metrics"
+                }
+              },
+              "additionalProperties": true
+            },
+            "serviceMonitor": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "default": false
+                },
+                "interval": {
+                  "default": "30s"
+                },
+                "scrapeTimeout": {
+                  "default": ""
+                },
+                "honorLabels": {
+                  "default": false
+                },
+                "relabelings": {
+                  "type": "array"
+                },
+                "metricRelabelings": {
+                  "type": "array"
+                },
+                "selector": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "scheme": {
+                  "default": ""
+                },
+                "tlsConfig": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "namespace": {
+                  "default": ""
+                },
+                "additionalLabels": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "annotations": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "clusterRoleRules": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "rules": {
+              "type": "array"
+            }
+          },
+          "additionalProperties": true
+        },
+        "automountServiceAccountToken": {
+          "default": true
+        },
+        "serviceAccount": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": true
+            },
+            "name": {
+              "default": ""
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "automountServiceAccountToken": {
+              "default": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "rbac": {
+          "type": "array"
+        },
+        "networkPolicy": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": false
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "applicationSet": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "default": "applicationset-controller"
+        },
+        "replicas": {
+          "default": 1
+        },
+        "runtimeClassName": {
+          "default": ""
+        },
+        "pdb": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "minAvailable": {
+              "default": ""
+            },
+            "maxUnavailable": {
+              "default": ""
+            },
+            "unhealthyPodEvictionPolicy": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "vpa": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "updateMode": {
+              "default": "Initial"
+            },
+            "containerPolicy": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "recommenders": {
+              "type": "array"
+            },
+            "startupBoost": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "default": ""
+            },
+            "tag": {
+              "default": ""
+            },
+            "imagePullPolicy": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "imagePullSecrets": {
+          "type": "array"
+        },
+        "extraArgs": {
+          "type": "array"
+        },
+        "extraEnv": {
+          "type": "array"
+        },
+        "extraEnvFrom": {
+          "type": "array"
+        },
+        "extraContainers": {
+          "type": "array"
+        },
+        "initContainers": {
+          "type": "array"
+        },
+        "extraVolumeMounts": {
+          "type": "array"
+        },
+        "extraVolumes": {
+          "type": "array"
+        },
+        "emptyDir": {
+          "type": "object",
+          "properties": {
+            "sizeLimit": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "metrics": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "service": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "default": "ClusterIP"
+                },
+                "clusterIP": {
+                  "default": ""
+                },
+                "annotations": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "labels": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "servicePort": {
+                  "default": 8080
+                },
+                "portName": {
+                  "default": "http-metrics"
+                }
+              },
+              "additionalProperties": true
+            },
+            "serviceMonitor": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "default": false
+                },
+                "interval": {
+                  "default": "30s"
+                },
+                "scrapeTimeout": {
+                  "default": ""
+                },
+                "honorLabels": {
+                  "default": false
+                },
+                "relabelings": {
+                  "type": "array"
+                },
+                "metricRelabelings": {
+                  "type": "array"
+                },
+                "selector": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "scheme": {
+                  "default": ""
+                },
+                "tlsConfig": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "namespace": {
+                  "default": ""
+                },
+                "additionalLabels": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "annotations": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "service": {
+          "type": "object",
+          "properties": {
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "type": {
+              "default": "ClusterIP"
+            },
+            "port": {
+              "default": 7000
+            },
+            "portName": {
+              "default": "http-webhook"
+            }
+          },
+          "additionalProperties": true
+        },
+        "automountServiceAccountToken": {
+          "default": true
+        },
+        "serviceAccount": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": true
+            },
+            "name": {
+              "default": "argocd-applicationset-controller"
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "automountServiceAccountToken": {
+              "default": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "deploymentAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "deploymentLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "podAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "podLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "resources": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "containerPorts": {
+          "type": "object",
+          "properties": {
+            "metrics": {
+              "default": 8080
+            },
+            "probe": {
+              "default": 8081
+            },
+            "webhook": {
+              "default": 7000
+            }
+          },
+          "additionalProperties": true
+        },
+        "dnsConfig": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "dnsPolicy": {
+          "default": "ClusterFirst"
+        },
+        "containerSecurityContext": {
+          "type": "object",
+          "properties": {
+            "runAsNonRoot": {
+              "default": true
+            },
+            "readOnlyRootFilesystem": {
+              "default": true
+            },
+            "allowPrivilegeEscalation": {
+              "default": false
+            },
+            "seccompProfile": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "default": "RuntimeDefault"
+                }
+              },
+              "additionalProperties": true
+            },
+            "capabilities": {
+              "type": "object",
+              "properties": {
+                "drop": {
+                  "type": "array",
+                  "items": {
+                    "default": "ALL"
+                  }
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "readinessProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "initialDelaySeconds": {
+              "default": 10
+            },
+            "periodSeconds": {
+              "default": 10
+            },
+            "timeoutSeconds": {
+              "default": 1
+            },
+            "successThreshold": {
+              "default": 1
+            },
+            "failureThreshold": {
+              "default": 3
+            }
+          },
+          "additionalProperties": true
+        },
+        "livenessProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "initialDelaySeconds": {
+              "default": 10
+            },
+            "periodSeconds": {
+              "default": 10
+            },
+            "timeoutSeconds": {
+              "default": 1
+            },
+            "successThreshold": {
+              "default": 1
+            },
+            "failureThreshold": {
+              "default": 3
+            }
+          },
+          "additionalProperties": true
+        },
+        "startupProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "initialDelaySeconds": {
+              "default": 10
+            },
+            "periodSeconds": {
+              "default": 10
+            },
+            "timeoutSeconds": {
+              "default": 1
+            },
+            "successThreshold": {
+              "default": 1
+            },
+            "failureThreshold": {
+              "default": 20
+            }
+          },
+          "additionalProperties": true
+        },
+        "terminationGracePeriodSeconds": {
+          "default": 30
+        },
+        "nodeSelector": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "tolerations": {
+          "type": "array"
+        },
+        "affinity": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "topologySpreadConstraints": {
+          "type": "array"
+        },
+        "deploymentStrategy": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "priorityClassName": {
+          "default": ""
+        },
+        "certificate": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "domain": {
+              "default": ""
+            },
+            "additionalHosts": {
+              "type": "array"
+            },
+            "duration": {
+              "default": ""
+            },
+            "renewBefore": {
+              "default": ""
+            },
+            "issuer": {
+              "type": "object",
+              "properties": {
+                "group": {
+                  "default": ""
+                },
+                "kind": {
+                  "default": ""
+                },
+                "name": {
+                  "default": ""
+                }
+              },
+              "additionalProperties": true
+            },
+            "privateKey": {
+              "type": "object",
+              "properties": {
+                "rotationPolicy": {
+                  "default": "Never"
+                },
+                "encoding": {
+                  "default": "PKCS1"
+                },
+                "algorithm": {
+                  "default": "RSA"
+                },
+                "size": {
+                  "default": 2048
+                }
+              },
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "ingress": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "ingressClassName": {
+              "default": ""
+            },
+            "hostname": {
+              "default": ""
+            },
+            "path": {
+              "default": "/api/webhook"
+            },
+            "pathType": {
+              "default": "Prefix"
+            },
+            "tls": {
+              "default": false
+            },
+            "extraHosts": {
+              "type": "array"
+            },
+            "extraPaths": {
+              "type": "array"
+            },
+            "extraRules": {
+              "type": "array"
+            },
+            "extraTls": {
+              "type": "array"
+            }
+          },
+          "additionalProperties": true
+        },
+        "httproute": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "parentRefs": {
+              "type": "array"
+            },
+            "hostnames": {
+              "type": "array"
+            },
+            "rules": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "matches": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "path": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "default": "PathPrefix"
+                            },
+                            "value": {
+                              "default": "/api/webhook"
+                            }
+                          },
+                          "additionalProperties": true
+                        }
+                      },
+                      "additionalProperties": true
+                    }
+                  }
+                },
+                "additionalProperties": true
+              }
+            }
+          },
+          "additionalProperties": true
+        },
+        "listenerset": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "parentRef": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "hostname": {
+              "default": ""
+            },
+            "listenerName": {
+              "default": "https"
+            },
+            "port": {
+              "default": 443
+            },
+            "protocol": {
+              "default": "HTTPS"
+            },
+            "tls": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "default": true
+                },
+                "mode": {
+                  "default": "Terminate"
+                },
+                "secretName": {
+                  "default": ""
+                }
+              },
+              "additionalProperties": true
+            },
+            "allowedRoutes": {
+              "type": "object",
+              "properties": {
+                "namespaces": {
+                  "type": "object",
+                  "properties": {
+                    "from": {
+                      "default": "Same"
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              },
+              "additionalProperties": true
+            },
+            "listeners": {
+              "type": "array"
+            }
+          },
+          "additionalProperties": true
+        },
+        "allowAnyNamespace": {
+          "default": false
+        },
+        "networkPolicy": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": false
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "notifications": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "default": true
+        },
+        "name": {
+          "default": "notifications-controller"
+        },
+        "argocdUrl": {
+          "default": ""
+        },
+        "runtimeClassName": {
+          "default": ""
+        },
+        "pdb": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "minAvailable": {
+              "default": ""
+            },
+            "maxUnavailable": {
+              "default": ""
+            },
+            "unhealthyPodEvictionPolicy": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "vpa": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "updateMode": {
+              "default": "Initial"
+            },
+            "containerPolicy": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "recommenders": {
+              "type": "array"
+            },
+            "startupBoost": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "default": ""
+            },
+            "tag": {
+              "default": ""
+            },
+            "imagePullPolicy": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "imagePullSecrets": {
+          "type": "array"
+        },
+        "extraArgs": {
+          "type": "array"
+        },
+        "extraEnv": {
+          "type": "array"
+        },
+        "extraEnvFrom": {
+          "type": "array"
+        },
+        "extraContainers": {
+          "type": "array"
+        },
+        "initContainers": {
+          "type": "array"
+        },
+        "extraVolumeMounts": {
+          "type": "array"
+        },
+        "extraVolumes": {
+          "type": "array"
+        },
+        "context": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "secret": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": true
+            },
+            "name": {
+              "default": "argocd-notifications-secret"
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "items": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "metrics": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "port": {
+              "default": 9001
+            },
+            "service": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "default": "ClusterIP"
+                },
+                "clusterIP": {
+                  "default": ""
+                },
+                "annotations": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "labels": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "portName": {
+                  "default": "http-metrics"
+                }
+              },
+              "additionalProperties": true
+            },
+            "serviceMonitor": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "default": false
+                },
+                "selector": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "additionalLabels": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "annotations": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "scheme": {
+                  "default": ""
+                },
+                "tlsConfig": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "honorLabels": {
+                  "default": false
+                },
+                "relabelings": {
+                  "type": "array"
+                },
+                "metricRelabelings": {
+                  "type": "array"
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "notifiers": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "deploymentAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "deploymentLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "podAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "podLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "resources": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "containerPorts": {
+          "type": "object",
+          "properties": {
+            "metrics": {
+              "default": 9001
+            }
+          },
+          "additionalProperties": true
+        },
+        "dnsConfig": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "dnsPolicy": {
+          "default": "ClusterFirst"
+        },
+        "containerSecurityContext": {
+          "type": "object",
+          "properties": {
+            "runAsNonRoot": {
+              "default": true
+            },
+            "readOnlyRootFilesystem": {
+              "default": true
+            },
+            "allowPrivilegeEscalation": {
+              "default": false
+            },
+            "seccompProfile": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "default": "RuntimeDefault"
+                }
+              },
+              "additionalProperties": true
+            },
+            "capabilities": {
+              "type": "object",
+              "properties": {
+                "drop": {
+                  "type": "array",
+                  "items": {
+                    "default": "ALL"
+                  }
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "readinessProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "initialDelaySeconds": {
+              "default": 10
+            },
+            "periodSeconds": {
+              "default": 10
+            },
+            "timeoutSeconds": {
+              "default": 1
+            },
+            "successThreshold": {
+              "default": 1
+            },
+            "failureThreshold": {
+              "default": 3
+            }
+          },
+          "additionalProperties": true
+        },
+        "livenessProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "initialDelaySeconds": {
+              "default": 10
+            },
+            "periodSeconds": {
+              "default": 10
+            },
+            "timeoutSeconds": {
+              "default": 1
+            },
+            "successThreshold": {
+              "default": 1
+            },
+            "failureThreshold": {
+              "default": 3
+            }
+          },
+          "additionalProperties": true
+        },
+        "startupProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "initialDelaySeconds": {
+              "default": 10
+            },
+            "periodSeconds": {
+              "default": 10
+            },
+            "timeoutSeconds": {
+              "default": 1
+            },
+            "successThreshold": {
+              "default": 1
+            },
+            "failureThreshold": {
+              "default": 20
+            }
+          },
+          "additionalProperties": true
+        },
+        "terminationGracePeriodSeconds": {
+          "default": 30
+        },
+        "nodeSelector": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "tolerations": {
+          "type": "array"
+        },
+        "affinity": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "topologySpreadConstraints": {
+          "type": "array"
+        },
+        "deploymentStrategy": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "default": "Recreate"
+            }
+          },
+          "additionalProperties": true
+        },
+        "priorityClassName": {
+          "default": ""
+        },
+        "automountServiceAccountToken": {
+          "default": true
+        },
+        "serviceAccount": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": true
+            },
+            "name": {
+              "default": "argocd-notifications-controller"
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "automountServiceAccountToken": {
+              "default": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "cm": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "clusterRoleRules": {
+          "type": "object",
+          "properties": {
+            "rules": {
+              "type": "array"
+            }
+          },
+          "additionalProperties": true
+        },
+        "subscriptions": {
+          "type": "array"
+        },
+        "templates": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "triggers": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "networkPolicy": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": false
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "commitServer": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "default": false
+        },
+        "name": {
+          "default": "commit-server"
+        },
+        "runtimeClassName": {
+          "default": ""
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "default": ""
+            },
+            "tag": {
+              "default": ""
+            },
+            "imagePullPolicy": {
+              "default": ""
+            }
+          },
+          "additionalProperties": true
+        },
+        "extraArgs": {
+          "type": "array"
+        },
+        "extraEnv": {
+          "type": "array"
+        },
+        "extraEnvFrom": {
+          "type": "array"
+        },
+        "extraVolumeMounts": {
+          "type": "array"
+        },
+        "extraVolumes": {
+          "type": "array"
+        },
+        "metrics": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "service": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "default": "ClusterIP"
+                },
+                "clusterIP": {
+                  "default": ""
+                },
+                "annotations": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "labels": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true
+                },
+                "servicePort": {
+                  "default": 8087
+                },
+                "portName": {
+                  "default": "metrics"
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "service": {
+          "type": "object",
+          "properties": {
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "port": {
+              "default": 8086
+            },
+            "portName": {
+              "default": "server"
+            }
+          },
+          "additionalProperties": true
+        },
+        "automountServiceAccountToken": {
+          "default": false
+        },
+        "serviceAccount": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": true
+            },
+            "name": {
+              "default": "argocd-commit-server"
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "automountServiceAccountToken": {
+              "default": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "deploymentAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "deploymentLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "podAnnotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "podLabels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "resources": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "dnsConfig": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "dnsPolicy": {
+          "default": "ClusterFirst"
+        },
+        "containerSecurityContext": {
+          "type": "object",
+          "properties": {
+            "runAsNonRoot": {
+              "default": true
+            },
+            "readOnlyRootFilesystem": {
+              "default": true
+            },
+            "allowPrivilegeEscalation": {
+              "default": false
+            },
+            "capabilities": {
+              "type": "object",
+              "properties": {
+                "drop": {
+                  "type": "array",
+                  "items": {
+                    "default": "ALL"
+                  }
+                }
+              },
+              "additionalProperties": true
+            },
+            "seccompProfile": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "default": "RuntimeDefault"
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "readinessProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": true
+            },
+            "httpPath": {
+              "default": "/healthz"
+            },
+            "initialDelaySeconds": {
+              "default": 5
+            },
+            "periodSeconds": {
+              "default": 10
+            },
+            "timeoutSeconds": {
+              "default": 1
+            },
+            "failureThreshold": {
+              "default": 3
+            }
+          },
+          "additionalProperties": true
+        },
+        "livenessProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": true
+            },
+            "httpPath": {
+              "default": "/healthz?full=true"
+            },
+            "initialDelaySeconds": {
+              "default": 30
+            },
+            "periodSeconds": {
+              "default": 30
+            },
+            "timeoutSeconds": {
+              "default": 5
+            },
+            "failureThreshold": {
+              "default": 3
+            }
+          },
+          "additionalProperties": true
+        },
+        "startupProbe": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "httpPath": {
+              "default": "/healthz"
+            },
+            "initialDelaySeconds": {
+              "default": 10
+            },
+            "periodSeconds": {
+              "default": 10
+            },
+            "timeoutSeconds": {
+              "default": 1
+            },
+            "failureThreshold": {
+              "default": 20
+            }
+          },
+          "additionalProperties": true
+        },
+        "terminationGracePeriodSeconds": {
+          "default": 30
+        },
+        "nodeSelector": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "tolerations": {
+          "type": "array"
+        },
+        "affinity": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "topologySpreadConstraints": {
+          "type": "array"
+        },
+        "deploymentStrategy": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "priorityClassName": {
+          "default": ""
+        },
+        "networkPolicy": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "default": false
+            }
+          },
+          "additionalProperties": true
+        },
+        "vpa": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false
+            },
+            "labels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "updateMode": {
+              "default": "Initial"
+            },
+            "containerPolicy": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            },
+            "recommenders": {
+              "type": "array"
+            },
+            "startupBoost": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true,
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Argo CD Helm values (chart 10.9.6)",
+  "$comment": "Completion aid inferred from official Helm defaults, not an authoritative validation schema. Source: https://raw.githubusercontent.com/argoproj/argo-helm/argo-cd-10.9.6/charts/argo-cd/values.yaml"
+}

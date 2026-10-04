@@ -1,6 +1,6 @@
 clusterName: retail-platform-dev
 region: us-east-1
-vpcId: vpc-0cbf34502b3645f62
+vpcId: vpc-09ed447ab7a7473ea
 
 replicaCount: 2
 
