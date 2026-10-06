@@ -15,8 +15,8 @@ module "eks" {
     aws_security_group.eks-sg.id
   ]
 
-  endpoint_private_access = true
-  endpoint_public_access  = true
+  endpoint_private_access = false
+  endpoint_public_access  = false
   public_access_cidrs     = var.eks_public_access_cidrs
 
   enabled_cluster_log_types = [
