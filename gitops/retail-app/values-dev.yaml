@@ -6,7 +6,7 @@ services:
     replicas: 1
     image:
       repository: "retail-ui"
-      tag: "ba0a24427d9d097f470a257c90d14acf5f9a0eda-37223123045-1"
+      tag: "ba1b2e58d1a8c741f1c24c9153c2809610689a61-37452165610-1"
     resources:
       requests:
         cpu: "250m"
@@ -25,7 +25,7 @@ services:
     replicas: 1
     image:
       repository: "retail-catalog"
-      tag: "ba0a24427d9d097f470a257c90d14acf5f9a0eda-37223123045-1"
+      tag: "ba1b2e58d1a8c741f1c24c9153c2809610689a61-37452165610-1"
     resources:
       requests:
         cpu: "250m"
@@ -39,7 +39,7 @@ services:
     replicas: 1
     image:
       repository: "retail-cart"
-      tag: "ba0a24427d9d097f470a257c90d14acf5f9a0eda-37223123045-1"
+      tag: "ba1b2e58d1a8c741f1c24c9153c2809610689a61-37452165610-1"
     resources:
       requests:
         cpu: "250m"
@@ -53,7 +53,7 @@ services:
     replicas: 1
     image:
       repository: "retail-orders"
-      tag: "ba0a24427d9d097f470a257c90d14acf5f9a0eda-37223123045-1"
+      tag: "ba1b2e58d1a8c741f1c24c9153c2809610689a61-37452165610-1"
     resources:
       requests:
         cpu: "250m"
@@ -67,7 +67,7 @@ services:
     replicas: 1
     image:
       repository: "retail-checkout"
-      tag: "ba0a24427d9d097f470a257c90d14acf5f9a0eda-37223123045-1"
+      tag: "ba1b2e58d1a8c741f1c24c9153c2809610689a61-37452165610-1"
     resources:
       requests:
         cpu: "250m"
@@ -80,7 +80,7 @@ services:
 
 ingress:
   enabled: true
-  securityGroup: retail-platform-alb-sg
+  securityGroup: "sg-004a145f668641d94"
   tags: environment=dev,project=retail-platform
 
 podSecurityContext:

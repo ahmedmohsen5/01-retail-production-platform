@@ -1,0 +1,26 @@
+prometheus:
+  ingress:
+    enabled: false
+  service:
+    type: ClusterIP
+  prometheusSpec:
+    retention: 7d
+    serviceMonitorSelectorNilUsesHelmValues: true
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 20Gi
+
+grafana:
+  enabled: true
+  ingress:
+    enabled: false
+  service:
+    type: ClusterIP
+
+alertmanager:
+  enabled: true
