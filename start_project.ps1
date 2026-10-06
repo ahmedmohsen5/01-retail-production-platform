@@ -5,7 +5,8 @@ param(
     [string]$BackendConfig = 'backend.hcl',
     [string]$PublicIp,
     [ValidateRange(1,180)][int]$BuildTimeoutMinutes = 60,
-    [string]$RolloutTimeout = '10m'
+    [string]$RolloutTimeout = '10m',
+    [ValidateRange(1,60)][int]$SyncTimeoutMinutes = 15
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -18,11 +19,20 @@ function Invoke-Tool {
 function Read-ToolJson {
     param([string]$Command, [string[]]$Arguments)
     $raw = Invoke-Tool $Command $Arguments
-    ($raw -join "`n") | ConvertFrom-Json
+    $parsed = ($raw -join "`n") | ConvertFrom-Json
+    # Windows PowerShell 5.1 can emit a JSON array as one pipeline object.
+    # Explicit enumeration prevents run filtering from matching the entire array.
+    foreach ($item in $parsed) { Write-Output $item }
 }
 function Write-Utf8 {
     param([string]$Path, [string]$Content)
     [IO.File]::WriteAllText($Path, $Content, (New-Object Text.UTF8Encoding($false)))
+}
+function Set-YamlScalar {
+    param([string]$Yaml, [string]$Key, [string]$Value)
+    $pattern = '(?m)^' + [regex]::Escape($Key) + ':[^\r\n]*'
+    if ([regex]::Matches($Yaml, $pattern).Count -ne 1) { throw "Expected exactly one '$Key' in values." }
+    return [regex]::Replace($Yaml, $pattern, ($Key + ': "' + $Value + '"'))
 }
 function Update-HelmImages {
     param([string]$Yaml, [hashtable]$ImageUris, [string]$Tag)
@@ -54,7 +64,11 @@ function Update-HelmImages {
 }
 Push-Location $PSScriptRoot
 try {
-    foreach ($tool in @('aws','terraform','gh','kubectl')) {
+    if (-not (Get-Command helm -ErrorAction SilentlyContinue)) {
+        $helmDirectory = Join-Path $env:LOCALAPPDATA 'Programs/Helm'
+        if (Test-Path (Join-Path $helmDirectory 'helm.exe')) { $env:Path = "$helmDirectory;$env:Path" }
+    }
+    foreach ($tool in @('aws','terraform','gh','kubectl','helm')) {
         if (-not (Get-Command $tool -ErrorAction SilentlyContinue)) { throw "Install $tool and add it to PATH first." }
     }
     Invoke-Tool gh @('auth','status')
@@ -74,8 +88,8 @@ try {
     $tf = "-chdir=$tfDirectory"
     Invoke-Tool terraform @($tf,'init','-input=false',"-backend-config=$BackendConfig")
     Invoke-Tool terraform @($tf,'validate')
-    Invoke-Tool terraform @($tf,'plan','-input=false','-out=startup.tfplan')
-    Invoke-Tool terraform @($tf,'apply','-input=false','-auto-approve','startup.tfplan')
+    Invoke-Tool terraform @($tf,'plan','-input=false','-lock-timeout=5m','-out=startup.tfplan')
+    Invoke-Tool terraform @($tf,'apply','-input=false','-lock-timeout=5m','-auto-approve','startup.tfplan')
     $outputs = Read-ToolJson terraform @($tf,'output','-json')
     $region = $outputs.aws_region.value
     $cluster = $outputs.cluster_name.value
@@ -105,46 +119,79 @@ try {
         $imageUris[$service] = $uri
         # Verify all exact image tags before changing any manifests.
         Invoke-Tool aws @('ecr','describe-images','--region',$region,'--repository-name',$repoName,'--image-ids',"imageTag=$tag",'--query','imageDetails[0].imageDigest','--output','text')
-        $path = Join-Path $PSScriptRoot "k8s/workloads/$service/deployment.yaml"
-        $yaml = [IO.File]::ReadAllText($path)
-        $pattern = '(?m)^(\s*image:\s*)[^\r\n]+'
-        if ([regex]::Matches($yaml,$pattern).Count -ne 1) { throw "Expected exactly one container image in $path." }
-        $updates[$path] = [regex]::Replace($yaml,$pattern,"`${1}${uri}:$tag")
     }
     $helmValuesPath = Join-Path $PSScriptRoot 'gitops/retail-app/values-dev.yaml'
     $updates[$helmValuesPath] = Update-HelmImages ([IO.File]::ReadAllText($helmValuesPath)) $imageUris $tag
+    $updates[$helmValuesPath] = Set-YamlScalar $updates[$helmValuesPath] '  securityGroup' $outputs.alb_sg_id.value
+    $controllerPath = Join-Path $PSScriptRoot 'k8s/platform/aws-load-balancer-controller/values-dev.yaml'
+    $controllerValues = [IO.File]::ReadAllText($controllerPath)
+    foreach ($entry in @{clusterName=$cluster; region=$region; vpcId=$outputs.vpc_id.value}.GetEnumerator()) {
+        $controllerValues = Set-YamlScalar $controllerValues $entry.Key $entry.Value
+    }
+    $updates[$controllerPath] = $controllerValues
     foreach ($entry in $updates.GetEnumerator()) { Write-Utf8 $entry.Key $entry.Value }
-    Write-Host "Updated Kubernetes manifests and Helm dev values to published image tag: $tag"
+    Write-Host "Updated Helm images, ALB security group and controller VPC settings: $tag"
+    Invoke-Tool helm @('lint','gitops/retail-app','-f',$helmValuesPath)
     $context = "retail-startup-$($identity.Account)-$cluster"
     Invoke-Tool aws @('eks','update-kubeconfig','--region',$region,'--name',$cluster,'--alias',$context)
-    Invoke-Tool kubectl @('--context',$context,'apply','-f','k8s/base/namespace.yml')
-    Invoke-Tool kubectl @('--context',$context,'apply','-R','-f','k8s/base')
-    Invoke-Tool kubectl @('--context',$context,'apply','-R','-f','k8s/workloads')
+    Invoke-Tool kubectl @('--context',$context,'--request-timeout=30s','get','nodes')
+    Invoke-Tool kubectl @('--context',$context,'--request-timeout=30s','apply','-f','k8s/base/namespace.yml')
+    Invoke-Tool kubectl @('--context',$context,'wait','--for=condition=Ready','node','--all',"--timeout=$RolloutTimeout")
+    Invoke-Tool helm @('repo','add','eks','https://aws.github.io/eks-charts','--force-update')
+    Invoke-Tool helm @('repo','add','argo','https://argoproj.github.io/argo-helm','--force-update')
+    Invoke-Tool helm @('repo','update','eks','argo')
+    Invoke-Tool kubectl @('--context',$context,'apply','-f','k8s/platform/aws-load-balancer-controller/serviceaccount.yaml')
+    Invoke-Tool helm @('upgrade','--install','aws-load-balancer-controller','eks/aws-load-balancer-controller','--kube-context',$context,'--namespace','kube-system','--version','3.5.0','-f',$controllerPath,'--wait',"--timeout=$RolloutTimeout")
+    Invoke-Tool helm @('upgrade','--install','argocd','argo/argo-cd','--kube-context',$context,'--namespace','argocd','--create-namespace','--version','10.9.6','-f','gitops/platform/argocd/values.yaml','--wait',"--timeout=$RolloutTimeout")
+    Invoke-Tool kubectl @('--context',$context,'wait','--for=condition=Established','crd/applications.argoproj.io','crd/appprojects.argoproj.io','--timeout=120s')
+    Invoke-Tool kubectl @('--context',$context,'apply','-f','gitops/argocd/retail-project.yaml')
+    # Parse the local bootstrap manifest without creating it first: old Git image tags must never auto-sync.
+    $app = Read-ToolJson kubectl @('--context',$context,'create','--dry-run=client','-f','gitops/argocd/retail-dev-application.yaml','-o','json')
+    $parameters = @(
+        @{name='imageRegistry'; value=($imageUris['ui'] -split '/',2)[0]; forceString=$true},
+        @{name='ingress.securityGroup'; value=$outputs.alb_sg_id.value; forceString=$true}
+    )
+    foreach ($service in $services) {
+        $parameters += @{name="services.$service.image.repository"; value=($imageUris[$service] -split '/',2)[1]; forceString=$true}
+        $parameters += @{name="services.$service.image.tag"; value=$tag; forceString=$true}
+    }
+    $app.spec.source.repoURL = "https://github.com/$Repository.git"
+    $app.spec.source.helm | Add-Member -NotePropertyName parameters -NotePropertyValue $parameters -Force
+    $app.spec | Add-Member -NotePropertyName syncPolicy -NotePropertyValue @{automated=@{enabled=$true; prune=$true; selfHeal=$true; allowEmpty=$false}} -Force
+    $appPath = Join-Path ([IO.Path]::GetTempPath()) ("retail-startup-" + [guid]::NewGuid().ToString('N') + '.json')
+    try {
+        Write-Utf8 $appPath ($app | ConvertTo-Json -Depth 30)
+        Invoke-Tool kubectl @('--context',$context,'apply','-f',$appPath)
+    } finally { Remove-Item -LiteralPath $appPath -ErrorAction SilentlyContinue }
+    $syncDeadline = (Get-Date).AddMinutes($SyncTimeoutMinutes)
+    do {
+        $state = Read-ToolJson kubectl @('--context',$context,'--request-timeout=30s','get','application',$app.metadata.name,'-n','argocd','-o','json')
+        # JSON indexing avoids strict-mode failures while the controller has not populated status yet.
+        $status = $state.PSObject.Properties['status']
+        if ($status) {
+            $sync = $status.Value.PSObject.Properties['sync']
+            $health = $status.Value.PSObject.Properties['health']
+            $operation = $status.Value.PSObject.Properties['operationState']
+            if ($sync -and $health -and $operation -and $sync.Value.status -eq 'Synced' -and $health.Value.status -eq 'Healthy' -and $operation.Value.phase -eq 'Succeeded') {
+                $deployments = Read-ToolJson kubectl @('--context',$context,'--request-timeout=30s','get','deployments','-n','retail','-o','json')
+                $matchingImages = @($services | Where-Object {
+                    $service = $_
+                    $deployment = $deployments.items | Where-Object { $_.metadata.name -eq $service }
+                    $deployment -and $deployment.spec.template.spec.containers[0].image -eq "$($imageUris[$service]):$tag"
+                })
+                if ($matchingImages.Count -eq $services.Count) { break }
+            }
+        }
+        if ((Get-Date) -ge $syncDeadline) { throw "Argo CD did not converge. Inspect kubectl --context $context describe application $($app.metadata.name) -n argocd" }
+        Write-Host 'Waiting for Argo CD to synchronize the published images and become Healthy...'
+        Start-Sleep -Seconds 10
+    } while ($true)
     foreach ($service in $services) {
         Invoke-Tool kubectl @('--context',$context,'-n','retail','rollout','status',"deployment/$service","--timeout=$RolloutTimeout")
     }
     Invoke-Tool kubectl @('--context',$context,'-n','retail','get','pods,services')
+    Invoke-Tool kubectl @('--context',$context,'-n','retail','get','ingress')
+    Write-Host 'Startup image/security-group overrides are active in Argo CD. Commit the updated values to Git; remove the overrides when returning to Git-only image promotion.'
     Write-Host "Project started successfully. Published image tag: $tag"
 }
 finally { Pop-Location }
-
-
-#kubectl create namespace retail
-#aws eks update-kubeconfig --region us-east-1 --name retail-platform-dev
-#kubectl apply -f k8s/platform/aws-load-balancer-controller/serviceaccount.yaml
-#helm repo add eks https://aws.github.io/eks-charts
-#helm repo update eks
-#helm upgrade --install aws-load-balancer-controller eks/aws-load-balancer-controller `
-#  --namespace kube-system `
-#  --version 3.5.0 `
-#  -f k8s/platform/aws-load-balancer-controller/values-dev.yaml `
-#  --wait `
-#  --timeout 5m
-#
-#helm upgrade --install argocd argo/argo-cd `
-#  --version 10.9.6 `
-#  --namespace argocd `
-#  --create-namespace `
-#  -f gitops/platform/argocd/values.yaml `
-#  --wait `
-#  --timeout 10m
