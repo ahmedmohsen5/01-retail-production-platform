@@ -12,7 +12,7 @@ spec:
       - retail
   selector:
     matchLabels:
-      app.kubernetes.io/name: retail-ui
+      app.kubernetes.io/name: ui
   endpoints:
     - port: http
       interval: 30s
@@ -34,7 +34,7 @@ spec:
       - retail
   selector:
     matchLabels:
-      app.kubernetes.io/name: retail-cart
+      app.kubernetes.io/name: cart
   endpoints:
     - port: http
       interval: 30s
@@ -56,7 +56,7 @@ spec:
       - retail
   selector:
     matchLabels:
-      app.kubernetes.io/name: retail-orders
+      app.kubernetes.io/name: orders
   endpoints:
     - port: http
       interval: 30s
@@ -79,7 +79,7 @@ spec:
       - retail
   selector:
     matchLabels:
-      app.kubernetes.io/name: retail-catalog
+      app.kubernetes.io/name: catalog
   endpoints:
     - port: http
       interval: 30s
@@ -101,7 +101,7 @@ spec:
       - retail
   selector:
     matchLabels:
-      app.kubernetes.io/name: retail-checkout
+      app.kubernetes.io/name: checkout
   endpoints:
     - port: http
       interval: 30s
